@@ -1,0 +1,9 @@
+package com.taxi.repository;
+
+import com.taxi.models.Voyage;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface VoyageRepository extends JpaRepository<Voyage, Long> {
+}
