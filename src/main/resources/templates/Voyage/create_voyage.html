@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Voyage</title>
+</head>
+<body>
+    <form th:action="@{/api/Voyage/createVoyage}" method="post">
+        <label for="dateDepartStr">Date de depart</label>
+        <input type="date" name="dateDepartStr">
+        <br>
+        <label for="heureDepartStr">Heure de depart</label>
+        <input type="time" name="heureDepartStr">
+        <br>
+        <label for="trajet">Trajet:</label>
+        <select name="idTrajet">
+            <option th:each="trajet : ${trajets}" th:value="${trajet.idTrajet}" th:text="${trajet.villeDepart} + ' - ' + ${trajet.villeArrivee}"></option>
+        </select>
+        <br>
+        <label for="chauffeur">Chauffeur:</label>
+        <select name="idChauffeur">
+            <option th:each="chauffeur : ${chauffeurs}" th:value="${chauffeur.idChauffeur}" th:text="${chauffeur.nom} + ' - ' + ${chauffeur.prenom}"></option>
+        </select>
+        <br>
+        <label for="vehicule">Vehicule:</label>
+        <select name="idVehicule">
+            <option th:each="vehicule : ${vehicules}" th:value="${vehicule.idVehicule}" th:text="${vehicule.immatriculation} + ' - ' + ${vehicule.nombrePlaces} + 'places'"></option>
+        </select>
+        <br>
+        <input type="submit" value="Create Voyage">
+    </form>
+    <p th:if="${error}" th:text="${error}"></p>
+</body>
+</html>

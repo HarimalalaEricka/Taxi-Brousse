@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Réservations</title>
+</head>
+<body>
+    <a href="/api/Reservation/reserver">Reserver</a>
+    <p>Listes des Reservation</p>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>Date de depart</td>
+                <td>heure de depart</td>
+                <td>Trajet</td>
+                <td>Au nom de </td>
+                <td>Numero du billet</td>
+                <td>Status de la reservation</td>
+                <td>Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="reservation : ${reservations}">
+                <td th:text="${reservation.voyage.dateDepart}">Date de depart</td>
+                <td th:text="${reservation.voyage.heureDepart}">heure de depart</td>
+                <td th:text="${reservation.voyage.trajet.villeDepart} + ' - ' + ${reservation.voyage.trajet.villeArrivee}">Trajet</td>
+                <td th:text="${reservation.auNomDe}">Au nom de </td>
+                <td th:text="${reservation.billet.numeroBillet}">Numero du billet</td>
+                <td th:text="${reservation.statut}">Status de la reservation</td>
+                <td>
+                    <a th:href="@{'/api/Reservation/edit/' + ${reservation.idReservation}}">Editer</a>
+                    <a th:href="@{'/api/Reservation/delete/' + ${reservation.idReservation}}">Supprimer</a>
+                    <a th:href="@{'/api/Reservation/cancel/' + ${reservation.idReservation}}">Annuler</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

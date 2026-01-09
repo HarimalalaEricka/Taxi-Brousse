@@ -33,4 +33,7 @@ public class VoyageService {
     public void delete(Long id) {
         VoyageRepository.deleteById(id);
     }
+    public List<Voyage> getAllEnCours(Long idTrajet) {
+        return VoyageRepository.findByEtatVoyage_EtatAndTrajet_IdTrajet("en attente", idTrajet);
+    }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Réservations</title>
+</head>
+<body>
+    <a href="/api/Voyage/createVoyage">Creer un Voyage</a>
+    <p>Listes des Voyages</p>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>Date de depart</td>
+                <td>heure de depart</td>
+                <td>Trajet</td>
+                <td>Etat de voyage</td>
+                <td>Chauffeur</td>
+                <td>Vehicule</td>
+                <td>Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="voyage : ${voyages}">
+                <td th:text="${voyage.dateDepart}">Date de depart</td>
+                <td th:text="${voyage.heureDepart}">heure de depart</td>
+                <td th:text="${voyage.trajet.villeDepart} + ' - ' + ${voyage.trajet.villeArrivee}">Trajet</td>
+                <td th:text="${voyage.etatVoyage}">Etat de voyage</td>
+                <td th:text="${voyage.chauffeur.nom} + ' ' + ${voyage.chauffeur.prenom}">Chauffeur</td>
+                <td th:text="${voyage.vehicule.immatriculation} + '_' + ${voyage.vehicule.nombrePlaces} + 'places'">Vehicule</td>
+                <td>
+                    <a th:href="@{'/api/voyage/edit/' + ${voyage.idVoyage}}">Editer</a>
+                    <a th:href="@{'/api/voyage/delete/' + ${voyage.idVoyage}}">Supprimer</a>
+                    <a th:href="@{'/api/voyage/cancel/' + ${voyage.idVoyage}}">Annuler</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
