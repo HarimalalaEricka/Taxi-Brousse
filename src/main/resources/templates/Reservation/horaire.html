@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horaire de la Réservation</title>
+</head>
+<body>
+    <h1>Horaires disponibles</h1>
+    
+    <!-- Vérifiez d'abord si la liste n'est pas vide -->
+    <div th:if="${voyages != null and !voyages.empty}">
+        <p>Nombre d'horaires disponibles: <span th:text="${voyages.size()}"></span></p>
+        
+        <!-- Boucle Thymeleaf correcte -->
+        <div th:each="voyage : ${voyages}">
+            <p>
+                <!-- Formatage correct des dates/heures -->
+                Heure: 
+                <span th:text="${voyage.heureDepart != null} ? 
+                    ${#temporals.format(voyage.heureDepart, 'HH:mm')} : 'Non spécifié'"></span>
+                , 
+                Date: 
+                <span th:text="${voyage.dateDepart != null} ? 
+                    ${#temporals.format(voyage.dateDepart, 'dd/MM/yyyy')} : 'Non spécifié'"></span>
+                <a th:href="@{/api/Reservation/ReserverPlace(voyageId=${voyage.idVoyage})}">Réserver</a>
+
+            </p>
+            <hr>
+        </div>
+    </div>
+    
+    <!-- Message si pas de voyages -->
+    <div th:if="${voyages == null or voyages.empty}">
+        <p style="color: red;">Aucun horaire disponible.</p>
+    </div>
+    
+    <br>
+    <a th:href="@{/api/Voyage/createVoyage}">Programmer un nouveau voyage</a>
+    <br>
+    <a th:href="@{/api/Reservation/reserver}">← Retour à la réservation</a>
+</body>
+</html>

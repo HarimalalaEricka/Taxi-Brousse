@@ -61,4 +61,10 @@ public class Facture {
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
+    public void genererNum() {
+        String timestamp = java.time.LocalDateTime.now()
+            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        
+        this.numFacture = "FAC_" + timestamp;
+    }
 }

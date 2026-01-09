@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Form</title>
+</head>
+<body>
+    <form action="/api/Reservation/horaire" method="post">
+        <label for="nbPlace">Nombre de places:</label>
+        <input type="number" name="nbPlace">
+        <br>
+        <label for="texte">Au nom de: </label>
+        <input type="text" name="nom">
+        <br>
+        <label for="utilisateur">Utilisateur:</label>
+        <select name="utilisateur">
+            <option th:each="utilisateur : ${utilisateurs}" 
+                    th:value="${utilisateur.idUtilisateur}" 
+                    th:text="${utilisateur.nom} + ' - ' + ${utilisateur.prenom}"/>
+        </select>
+        <br>
+        <label for="voyage">Voyage: </label>
+        <select name="voyage">
+            <option th:each="voyage : ${voyages}" 
+                th:value="${voyage.idVoyage}" 
+                th:text="${voyage.trajet.villeDepart} + ' - ' + ${voyage.trajet.villeArrivee}"/>
+        </select>
+        <br>
+        <input type="submit" value="Valider">
+    </form>
+</body>
+</html>

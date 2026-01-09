@@ -28,4 +28,10 @@ public class Billet {
     public void setNumeroBillet(String numeroBillet) {
         this.numeroBillet = numeroBillet;
     }
+    public void genererNumeroBillet() {
+        String timestamp = java.time.LocalDateTime.now()
+            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        
+        this.numeroBillet = "BIL_" + timestamp;
+    }
 }
