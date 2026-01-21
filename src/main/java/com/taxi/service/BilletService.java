@@ -1,7 +1,7 @@
 package com.taxi.service;
 
-import com.taxi.models.Billet;
-import com.taxi.repository.BilletRepository;
+import com.taxi.models.*;
+import com.taxi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +32,10 @@ public class BilletService {
 
     public void delete(Long id) {
         BilletRepository.deleteById(id);
+    }
+
+    public List<Billet> findByReservation(Reservation reservation)
+    {
+        return BilletRepository.findByReservation(reservation);
     }
 }

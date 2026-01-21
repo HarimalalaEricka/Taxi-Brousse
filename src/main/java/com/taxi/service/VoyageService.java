@@ -1,18 +1,39 @@
 package com.taxi.service;
 
-import com.taxi.models.Voyage;
-import com.taxi.repository.VoyageRepository;
+import com.taxi.models.*;
+import com.taxi.dto.*;
+import com.taxi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.Date;
+import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.stream.Collectors;
 
 @Service
 public class VoyageService {
 
     @Autowired
     private VoyageRepository VoyageRepository;
+    @Autowired
+    private PlaceRepository placeRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private NbrPlaceReservationRepository nbrPlaceReservationRepository;
+    @Autowired
+    private VuePrixBilletRepository vuePrixBilletRepository;
+    @Autowired
+    private PrixBilletRepository prixBilletRepository;
+    @Autowired 
+    private PrixBilletService prixBilletService;
 
     public Voyage create(Voyage Voyage) {
         return VoyageRepository.save(Voyage);
@@ -32,5 +53,98 @@ public class VoyageService {
 
     public void delete(Long id) {
         VoyageRepository.deleteById(id);
+    }
+    public List<Voyage> getAllEnCours(Long idTrajet) {
+        return VoyageRepository.findByEtatVoyage_EtatAndTrajet_IdTrajet("en attente", idTrajet);
+    }
+    
+    public double calculValeurMax(Voyage voyage) {
+        double valeurMax = 0.0;
+        
+        if (voyage.getVehicule() == null || voyage.getTrajet() == null) {
+            return valeurMax;
+        }
+        
+        // Utiliser LocalDate au lieu de Date
+        LocalDate aujourdhui = LocalDate.now();
+        
+        // Récupérer les places du véhicule
+        List<Place> places = placeRepository.findByVehicule(voyage.getVehicule());
+        
+        // Récupérer les prix actifs pour ce trajet
+        List<PrixBillet> prixBillets = prixBilletRepository.findByTrajetAndDateFinIsNull(voyage.getTrajet());
+        
+        // Filtrer pour garder seulement les prix avec date début <= aujourd'hui
+        Map<TypePlace, Double> prixParType = prixBillets.stream()
+            .filter(prix -> !prix.getDateDebut().isAfter(aujourdhui))  // dateDebut <= aujourdhui
+            .collect(Collectors.toMap(
+                PrixBillet::getTypePlace,
+                prix -> prix.getPrix().doubleValue()  // Conversion BigDecimal -> double
+            ));
+        
+        // Calculer la valeur maximale
+        for (Place place : places) {
+            TypePlace typePlace = place.getTypePlace();
+            if (prixParType.containsKey(typePlace)) {
+                    System.out.println("===========================================");
+                    System.out.println("VALEUR MAX" + voyage.getTrajet().getIdTrajet());
+                    System.out.println(valeurMax + " += " + prixParType.get(typePlace) );
+                    System.out.println("===========================================");
+                valeurMax += prixParType.get(typePlace);
+            }
+        }
+        
+        return valeurMax;
+    }
+    public double calculChiffreAffaire(Voyage voyage) 
+    {
+        if (voyage == null || voyage.getTrajet() == null) {
+            return 0.0;
+        }
+        
+        Long idTrajet = voyage.getTrajet().getIdTrajet();
+        double chiffreAffaireTotal = 0.0;
+        
+        // Récupérer toutes les réservations pour ce voyage
+        List<Reservation> reservations = reservationRepository.findByVoyage(voyage);
+        
+        for (Reservation reservation : reservations) {
+            // Récupérer les nbr_place_reservation pour cette réservation
+            List<NbrPlaceReservation> nbrPlaces = 
+                nbrPlaceReservationRepository.findByReservation(reservation);
+            
+            for (NbrPlaceReservation npr : nbrPlaces) {
+                CategoriePersonne categoriePersonne = npr.getCategoriePersonne();
+                String categorie = categoriePersonne.getCategorie();
+                Long idTypePlace = categoriePersonne.getTypePlace().getIdTypePlace();
+                Integer nbrPlace = npr.getNbrPlace();
+                
+                // Récupérer le prix final depuis la vue
+                Double prixFinal = vuePrixBilletRepository.findPrixFinal(
+                    idTrajet, categorie, idTypePlace
+                );
+                
+                if (prixFinal != null) {
+                    System.out.println("===========================================");
+                    System.out.println("CA" + voyage.getTrajet().getIdTrajet());
+                    System.out.println(chiffreAffaireTotal + " += " + prixFinal + " * " + nbrPlace);
+                    System.out.println("===========================================");
+                    chiffreAffaireTotal += prixFinal * nbrPlace;
+                }
+            }
+        }
+        
+        return chiffreAffaireTotal;
+    }
+    public List<VoyageValeur> getVoyagesWithValeurMax( List<Voyage> voyages)
+    {
+        List<VoyageValeur> result = new ArrayList<>();
+        for( Voyage v : voyages)
+        {
+            double valeurMax = calculValeurMax(v);
+            double chiffreAffaire = calculChiffreAffaire(v);
+            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire) );
+        }
+        return result;
     }
 }

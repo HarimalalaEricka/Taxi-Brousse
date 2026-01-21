@@ -1,0 +1,51 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Billet</h1>
+            </div>
+        </header>
+
+        <main>
+            <h2>Liste des Billets</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Billets</h3>
+                    <p>Consultez et gérez tous vos Billets</p>
+                </div>
+                <div th:text="${billets.size()}">0</div>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Numero Billet</th>
+                            <th>Numero Place</th>
+                            <th>Au nom de</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${billets.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucun Billet trouvé</h3>
+                                    <p>Vous n'avez aucune Billet pour le moment.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="billet : ${billets}">
+                        <td th:text="${billet.numeroBillet}">villeDepart</td>
+                        <td th:text="${billet.place.numeroPlace}">villeArrivee</td>
+                        <td th:text="${billet.reservation.auNomDe}">Distance</td>
+                    </tr>
+                    </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

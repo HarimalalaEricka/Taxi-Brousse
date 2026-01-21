@@ -1,0 +1,68 @@
+
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Vehicule</h1>
+            </div>
+            <a href="/api/Vehicule/createVehicule">
+                Nouveau Vehicule
+            </a>
+        </header>
+
+        <main>
+            <h2>Liste des Vehicules</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Vehicules</h3>
+                    <p>Consultez et gérez tous vos Vehicules</p>
+                </div>
+                <div th:text="${vehiculesDetails.size()}">0</div>
+            </div>
+
+            <div th:each="detail : ${vehiculesDetails}">
+                <h2>Véhicule : <span th:text="${detail.vehicule.immatriculation}"></span></h2>
+                
+                <p>ID : <span th:text="${detail.vehicule.idVehicule}"></span></p>
+                <p>Nombre total de places : <span th:text="${detail.vehicule.nombrePlaces}"></span></p>
+                
+                <p>État : 
+                    <span th:if="${detail.vehicule.etatVehicule != null}" 
+                        th:text="${detail.vehicule.etatVehicule.status}">
+                        Statut
+                    </span>
+                    <span th:unless="${detail.vehicule.etatVehicule != null}">
+                        Non spécifié
+                    </span>
+                </p>
+                
+                <div th:if="${detail.placesParType != null and not detail.placesParType.empty}">
+                    <h3>Répartition des places :</h3>
+                    <table border="1">
+                        <tr>
+                            <th>Type de place</th>
+                            <th>Nombre de places</th>
+                        </tr>
+                        <tr th:each="typeDetail : ${detail.placesParType}">
+                            <td th:text="${typeDetail.typePlace}">Type</td>
+                            <td th:text="${typeDetail.nombrePlaces}">0</td>
+                        </tr>
+                    </table>
+                </div>
+                <div th:if="${detail.placesParType == null or detail.placesParType.empty}">
+                    <p>Aucune information sur les places</p>
+                </div>
+                
+                <hr>
+                <div class="vehicule-actions">
+    
+                <a th:href="@{'/api/Vehicule/edit/' + ${detail.vehicule.idVehicule}}">Éditer</a>
+                    <a th:href="@{'/api/Vehicule/delete/' + ${detail.vehicule.idVehicule}}"
+                    onclick="return confirm('Supprimer ce véhicule ?')">Supprimer</a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</section>

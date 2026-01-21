@@ -1,0 +1,72 @@
+<section th:fragment="content">
+    <header>
+        <div>
+            <h1>Système de Réservation</h1>
+        </div>
+    </header>
+
+    <h2>Formulaire de Réservations</h2>
+    
+    <form th:action="@{/api/Reservation/horaire}" method="post">
+        
+        <!-- Informations de base -->
+        <div>
+            <label for="voyageId">Voyage :</label>
+            <select id="voyageId" name="voyageId" required>
+                <option value="">Choisir un voyage</option>
+                <option th:each="voyage : ${voyages}" 
+                        th:value="${voyage.idVoyage}"
+                        th:text="${voyage.trajet.villeDepart} + ' → ' + ${voyage.trajet.villeArrivee}">
+                </option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="utilisateurId">Utilisateur :</label>
+            <select id="utilisateurId" name="utilisateurId" required>
+                <option value="">Choisir un utilisateur</option>
+                <option th:each="utilisateur : ${utilisateurs}" 
+                        th:value="${utilisateur.idUtilisateur}"
+                        th:text="${utilisateur.nom} + ' ' + ${utilisateur.prenom}">
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label for="auNomDe">Nom pour la réservation :</label>
+            <input type="text" id="auNomDe" name="nom" required>
+        </div>
+        
+        <!-- Tableau des places -->
+        <p>Sélectionnez le nombre de places :</p>
+        
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Catégorie / Type</th>
+                    <th th:each="typePlace : ${typesPlace}" th:text="${typePlace.type}"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Pour chaque catégorie (adulte, enfant, senior) -->
+                <tr th:each="entry : ${categoriesByType}">
+                    <td th:text="${entry.key}"></td> <!-- Nom de la catégorie -->
+                    
+                    <!-- Pour chaque type de place -->
+                    <td th:each="typePlace : ${typesPlace}">
+                        <!-- Trouver la CategoriePersonne correspondante -->
+                        <div th:each="cp : ${entry.value}" 
+                            th:if="${cp.typePlace.idTypePlace == typePlace.idTypePlace}">
+                            <input type="number" 
+                                th:name="|nbrPlaces[${cp.idCategoriePersonne}]|"
+                                min="0" 
+                                max="10" 
+                                value="0">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Réserver</button>
+    </form>
+</section>

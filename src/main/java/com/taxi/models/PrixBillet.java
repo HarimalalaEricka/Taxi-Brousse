@@ -3,6 +3,8 @@ package com.taxi.models;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.taxi.models.*;
 
 @Entity
 @Table(name = "prix_billet")
@@ -19,11 +21,15 @@ public class PrixBillet {
     private LocalDate dateDebut;
 
     @Column(name = "date_fin")
-    private String dateFin; // VARCHAR(50) selon ta table, sinon LocalDate si tu préfères
+    private LocalDate dateFin; // VARCHAR(50) selon ta table, sinon LocalDate si tu préfères
 
     @ManyToOne
     @JoinColumn(name = "id_trajet", nullable = false)
     private Trajet trajet;
+
+    @ManyToOne
+    @JoinColumn(name = "id_type_place", nullable = false)
+    private TypePlace typePlace;
 
     // Getters et setters
     public Long getIdPrixBillet() {
@@ -50,11 +56,11 @@ public class PrixBillet {
         this.dateDebut = dateDebut;
     }
 
-    public String getDateFin() {
+    public LocalDate getDateFin() {
         return dateFin;
     }
 
-    public void setDateFin(String dateFin) {
+    public void setDateFin(LocalDate dateFin) {
         this.dateFin = dateFin;
     }
 
@@ -64,5 +70,13 @@ public class PrixBillet {
 
     public void setTrajet(Trajet trajet) {
         this.trajet = trajet;
+    }
+
+    public TypePlace getTypePlace() {
+        return typePlace;
+    }
+
+    public void setTypePlace(TypePlace typePlace) {
+        this.typePlace =typePlace;
     }
 }

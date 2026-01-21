@@ -1,0 +1,63 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Chauffeur</h1>
+            </div>
+            <a href="/api/Chauffeur/createChauffeur">
+                Nouveau Chauffeur
+            </a>
+        </header>
+
+        <main>
+            <h2>Liste des Chauffeurs</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Chauffeurs</h3>
+                    <p>Consultez et gérez tous vos Chauffeurs</p>
+                </div>
+                <div th:text="${chauffeurs.size()}">0</div>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Telephone</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${chauffeurs.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucun Chauffeur trouvé</h3>
+                                    <p>Vous n'avez aucune Chauffeur pour le moment.</p>
+                                    <a href="/api/Chauffeur/createChauffeur">
+                                        Créer une Chauffeur
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="chauffeur : ${chauffeurs}">
+                        <td th:text="${chauffeur.nom}">villeDepart</td>
+                        <td th:text="${chauffeur.prenom}">villeArrivee</td>
+                        <td th:text="${chauffeur.telephone}">Distance</td>
+                        <td th:text="${chauffeur.status}">Duree</td>
+                        <td>
+                            <a th:href="@{'/api/Chauffeur/edit' + ${chauffeur.idChauffeur}}">Edit</a>
+                            <a th:href="@{'/api/Chauffeur/delete' + ${chauffeur.idChauffeur}}">Supprimer</a>
+                        </td>
+                    </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

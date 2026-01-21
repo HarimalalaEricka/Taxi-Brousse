@@ -1,0 +1,70 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Voyage</h1>
+            </div>
+            <a href="/api/Voyage/createVoyage">
+                Nouveau Voyage
+            </a>
+        </header>
+
+        <main>
+            <h2>Liste des voyages</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des voyages</h3>
+                    <p>Consultez et gérez tous vos voyages</p>
+                </div>
+                <div th:text="${valeursMax.size()}">0</div>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Date de depart</th>
+                            <th>heure de depart</th>
+                            <th>Trajet</th>
+                            <th>Etat de voyage</th>
+                            <th>Chauffeur</th>
+                            <th>Vehicule</th>
+                            <th>Valeur Max</th>
+                            <th>Chiffre Affaire</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${valeursMax.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucun voyage trouvé</h3>
+                                    <p>Vous n'avez aucune voyage pour le moment.</p>
+                                    <a href="/api/Voyage/createVoyage">
+                                        Créer une voyage
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="valeurMax : ${valeursMax}">
+                            <td th:text="${valeurMax.getVoyage().dateDepart}">Date de depart</td>
+                            <td th:text="${valeurMax.getVoyage().heureDepart}">heure de depart</td>
+                            <td th:text="${valeurMax.getVoyage().trajet.villeDepart} + ' - ' + ${valeurMax.getVoyage().trajet.villeArrivee}">Trajet</td>
+                            <td th:text="${valeurMax.getVoyage().etatVoyage.etat}">Etat de voyage</td>
+                            <td th:text="${valeurMax.getVoyage().chauffeur.nom} + ' ' + ${valeurMax.getVoyage().chauffeur.prenom}">Chauffeur</td>
+                            <td th:text="${valeurMax.getVoyage().vehicule.immatriculation} + '_' + ${valeurMax.getVoyage().vehicule.nombrePlaces} + 'places'">Vehicule</td>
+                            <td th:text="${valeurMax.valeurMax}">Valeur Max</td>
+                            <td th:text="${valeurMax.chiffreAffaire}">Chiffre Affaire</td>
+                            <td>
+                                <a th:href="@{'/api/voyage/edit/' + ${valeurMax.getVoyage().idVoyage}}">Editer</a>
+                                <a th:href="@{'/api/voyage/delete/' + ${valeurMax.getVoyage().idVoyage}}">Supprimer</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

@@ -1,0 +1,73 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Système de Réservation</h1>
+            </div>
+            <a href="/api/Reservation/reserver">
+                Nouvelle Réservation
+            </a>
+        </header>
+        
+        <main>
+            <h2>Liste des Réservations</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des réservations</h3>
+                    <p>Consultez et gérez toutes vos réservations</p>
+                </div>
+                <div th:text="${reservations.size()}">0</div>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Date de départ</th>
+                            <th>Heure de départ</th>
+                            <th>Trajet</th>
+                            <th>Au nom de</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${reservations.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucune réservation trouvée</h3>
+                                    <p>Vous n'avez aucune réservation pour le moment.</p>
+                                    <a href="/api/Reservation/reserver">
+                                        Créer une réservation
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="reservation : ${reservations}">
+                            <td th:text="${reservation.voyage.dateDepart}">Date</td>
+                            <td th:text="${reservation.voyage.heureDepart}">Heure</td>
+                            <td th:text="${reservation.voyage.trajet.villeDepart} + ' → ' + ${reservation.voyage.trajet.villeArrivee}">Trajet</td>
+                            <td th:text="${reservation.auNomDe}">Nom</td>
+                            <td th:text="${reservation.statut}">Statut</td>
+                            <td>
+                                <div>
+                                    <a th:href="@{'/api/Reservation/' + ${reservation.idReservation} + '/billets'}">Billets</a>
+                                    <a th:href="@{'/api/Reservation/edit/' + ${reservation.idReservation}}">Éditer</a>
+                                    <a th:href="@{'/api/Reservation/delete/' + ${reservation.idReservation}}">Supprimer</a>
+                                    <a th:href="@{'/api/Reservation/cancel/' + ${reservation.idReservation}}">Annuler</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p th:text="${montant}"></p>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Système de Réservation © 2023</p>
+        </footer>
+    </div>
+</section>

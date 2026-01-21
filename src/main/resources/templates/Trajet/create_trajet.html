@@ -1,0 +1,23 @@
+
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Trajet</h1>
+            </div>
+        </header>
+
+            <h2>Liste des Trajets</h2>
+        <form th:action="@{/api/Trajet/createTrajet}" method="post">
+            <label for="villeDepart">Ville de depart : </label>
+            <input type="text" id="villeDepart" name="villeDepart" required><br><br>
+            <label for="villeArrivee">Ville d'arrivee : </label>
+            <input type="text" id="villeArrivee" name="villeArrivee" required><br><br>
+            <label for="distance">Distance : </label>
+            <input type="number" id="distance" name="distance" required><br><br>
+            <label for="duree">Durée (en minutes) : </label>
+            <input type="number" id="duree" name="duree" required><br><br>
+            <input type="submit" value="Créer Trajet">
+        </form>
+    </div>
+</section>

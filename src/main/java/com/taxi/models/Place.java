@@ -19,6 +19,10 @@ public class Place {
     @JoinColumn(name = "id_vehicule", nullable = false)
     private Vehicule vehicule;
 
+    @ManyToOne
+    @JoinColumn(name = "id_type_place", nullable = false)
+    private TypePlace typePlace;
+
     public Long getIdPlace() {
         return idPlace;
     }
@@ -49,5 +53,16 @@ public class Place {
 
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+    }
+
+    public TypePlace getTypePlace() {
+        return typePlace;
+    }
+
+    public void setTypePlace(TypePlace typePlace) {
+        this.typePlace = typePlace;
+    }
+    public void generererNumeroPlace() {
+        this.numeroPlace = "P-" + this.vehicule.getIdVehicule() + "-" + this.idPlace;
     }
 }

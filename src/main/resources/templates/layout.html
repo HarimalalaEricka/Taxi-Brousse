@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css?family=IM+FELL+French+Canon&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Imperial+Script&display=swap" rel="stylesheet" />
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link th:if="${pageCss != null}" th:href="@{/css/{file}(file=${pageCss})}" rel="stylesheet">
+    <title th:text="${title}">Taxi-Brousse</title>
+</head>
+
+<body>
+
+<div class="v1_4">
+
+    <!-- SIDEBAR -->
+    <div class="v2_6">
+        <div class="v8_4"></div>
+        <div class="v8_5"></div>
+        <a href="/"><div class="v8_10"><span class="v8_11">HOME</span></div></a>
+        <div class="v8_19"><span class="v8_20">ADMIN</span></div>
+        <a href="/api/Reservation/list"><div class="v8_29"><span class="v8_30">RESERVER</span></div></a>
+        <a href="/api/Voyage/list"><div class="v8_39"><span class="v8_40">VOYAGE</span></div></a>
+        <a href="/api/Vehicule/list"><div class="v8_49"><span class="v8_50">VEHICULE</span></div></a>
+        <a href="/api/Trajet/list"><div class="v8_65"><span class="v8_66">TRAJET</span></div></a>
+        <a href="/api/Chauffeur/list"><div class="v8_82"><span class="v8_83">CHAUFFEUR</span></div></a>
+        <a href="/api/PrixBillet/list"><div class="v8_91"><span class="v8_92">PRIX</span></div></a>
+        <a href="/api/Facture/list"><div class="v8_101"><span class="v8_102">FACTURE</span></div></a>
+    </div>
+    
+    <!-- CONTENU DYNAMIQUE -->
+    <main th:replace="~{${content} :: ${fragment}}"></main>
+
+    <div class="v4_8"></div>
+    <a href="/"></a><span class="v4_12">Taxi-Brousse</span></a>
+    <a href="/"></a><span class="v8_2">Taxi-Brousse</span></a>
+
+</div>
+
+</body>
+</html>

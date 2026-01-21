@@ -1,0 +1,112 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Voyage</h1>
+            </div>
+        </header>
+        <h2>Formulaire de voyage</h2>
+        
+        <form th:action="@{/api/Voyage/createVoyage}" method="post">
+            <!-- Section Date et Heure -->
+            <div>
+                <h3>Date et Heure</h3>
+                
+                <div>
+                    <div>
+                        <label for="dateDepartStr">
+                            Date de départ 
+                        </label>
+                        <div>
+                            <input type="date" 
+                                   id="dateDepartStr" 
+                                   name="dateDepartStr" 
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="heureDepartStr">
+                            Heure de départ 
+                        </label>
+                        <div>
+                            <input type="time" 
+                                   id="heureDepartStr" 
+                                   name="heureDepartStr" 
+                                   required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Trajet -->
+            <div>
+                <h3>Trajet</h3>
+                
+                <div>
+                    <label for="idTrajet">
+                        Sélectionnez un trajet 
+                    </label>
+                    <div>
+                        <select id="idTrajet" name="idTrajet" required>
+                            <option value="" disabled selected>-- Choisissez un trajet --</option>
+                            <option th:each="trajet : ${trajets}" 
+                                    th:value="${trajet.idTrajet}" 
+                                    th:text="${trajet.villeDepart} + ' → ' + ${trajet.villeArrivee}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Personnel et Véhicule -->
+            <div>
+                <h3>Personnel et Véhicule</h3>
+                
+                <div>
+                    <div>
+                        <label for="idChauffeur">
+                            Chauffeur 
+                        </label>
+                        <div>
+                            <select id="idChauffeur" name="idChauffeur" required>
+                                <option value="" disabled selected>-- Sélectionnez un chauffeur --</option>
+                                <option th:each="chauffeur : ${chauffeurs}" 
+                                        th:value="${chauffeur.idChauffeur}" 
+                                        th:text="${chauffeur.nom} + ' ' + ${chauffeur.prenom}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="idVehicule">
+                            Véhicule 
+                        </label>
+                        <div>
+                            <select id="idVehicule" name="idVehicule" required>
+                                <option value="" disabled selected>-- Choisissez un véhicule --</option>
+                                <option th:each="vehicule : ${vehicules}" 
+                                        th:value="${vehicule.idVehicule}" 
+                                        th:text="${vehicule.immatriculation} + ' - ' + ${vehicule.nombrePlaces} + ' places'">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message d'erreur -->
+            <div th:if="${error}">
+                <span th:text="${error}"></span>
+            </div>
+            
+            <!-- Actions du formulaire -->
+            <div>
+                <button type="submit">
+                    Créer le Voyage
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

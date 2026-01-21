@@ -33,4 +33,7 @@ public class EtatVehiculeService {
     public void delete(Long id) {
         EtatVehiculeRepository.deleteById(id);
     }
+    public Optional<EtatVehicule> getByStatus(String status) {
+        return EtatVehiculeRepository.findByStatus(status);
+    }
 }

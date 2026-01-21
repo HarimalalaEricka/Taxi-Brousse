@@ -1,0 +1,63 @@
+
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Trajet</h1>
+            </div>
+            <a href="/api/Trajet/createTrajet">
+                Nouveau Trajet
+            </a>
+        </header>
+
+        <main>
+            <h2>Liste des Trajets</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Trajets</h3>
+                    <p>Consultez et gérez tous vos Trajets</p>
+                </div>
+                <div th:text="${trajets.size()}">0</div>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Ville de depart</th>
+                            <th>Ville d'arrivee</th>
+                            <th>Distance (km)</th>
+                            <th>Duree estimee (min)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${trajets.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucun trajet trouvé</h3>
+                                    <p>Vous n'avez aucune trajet pour le moment.</p>
+                                    <a href="/api/Trajet/createTrajet">
+                                        Créer une trajet
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="trajet : ${trajets}">
+                        <td th:text="${trajet.villeDepart}">villeDepart</td>
+                        <td th:text="${trajet.villeArrivee}">villeArrivee</td>
+                        <td th:text="${trajet.distance}">Distance</td>
+                        <td th:text="${trajet.dureeEstimee}">Duree</td>
+                        <td>
+                            <a th:href="@{'/api/trajet/edit' + ${trajet.idTrajet}}">Editer</a>
+                            <a th:href="@{'/api/trajet/delete' + ${trajet.idTrajet}}">Supprimer</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

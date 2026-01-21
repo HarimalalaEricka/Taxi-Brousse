@@ -1,0 +1,432 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenu principal - pour la balise section qui remplace main */
+/* Contenu principal - cache aussi la barre de scroll */
+section {
+  position: absolute;
+  top: 160px;
+  left: 300px;
+  right: 30px;
+  padding: 20px;
+  min-height: 600px;
+  overflow-y: auto;
+  z-index: 100;
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px;
+  
+  /* Cache la barre de scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE et Edge */
+}
+
+/* Cache la barre de scroll pour Chrome, Safari et Opera */
+section::-webkit-scrollbar {
+  display: none;
+}
+
+section h2 {
+  font-family: 'IM FELL French Canon', serif;
+  font-size: 28px;
+  color: rgba(0,0,0,1);
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+
+section p {
+  font-family: 'IM FELL French Canon', serif;
+  font-size: 16px;
+  color: rgba(0,0,0,0.8);
+  line-height: 1.6;
+}
+
+/* Style des liens dans la sidebar */
+.v2_6 a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.v2_6 a:hover .v8_10,
+.v2_6 a:hover .v8_19,
+.v2_6 a:hover .v8_29,
+.v2_6 a:hover .v8_39,
+.v2_6 a:hover .v8_49,
+.v2_6 a:hover .v8_65,
+.v2_6 a:hover .v8_82,
+.v2_6 a:hover .v8_91,
+.v2_6 a:hover .v8_101 {
+  background-color: rgba(130,129,115,1);
+  cursor: pointer;
+}
+
+.v1_4 {
+  width: 100%;
+  min-height: 100vh;
+  background: rgba(253,255,254,1);
+  opacity: 1;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  overflow: visible;
+}
+/* MASQUE POUR LA ZONE PRINCIPALE (côté droit) */
+.v1_4::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 271px;
+  right: 0;
+  height: 160px;
+  background: linear-gradient(
+    to bottom,
+    rgba(253,255,254,1) 0%,
+    rgba(253,255,254,1) 92%,
+    rgba(253,255,254,0) 100%
+  );
+  z-index: 150;
+  pointer-events: none;
+}
+/* SIDEBAR SCROLLABLE */
+/* SIDEBAR SCROLLABLE - CACHE LA BARRE DE SCROLL */
+.v2_6 {
+  width: 271px;
+  height: 100vh;
+  background: rgba(150,149,135,1);
+  opacity: 1;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 50;
+  
+  /* Cache la barre de scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE et Edge */
+}
+
+/* Cache la barre de scroll pour Chrome, Safari et Opera */
+.v2_6::-webkit-scrollbar {
+  display: none;
+}
+
+/* MASQUE SOLIDE (PAS DE FLOU) EN HAUT DE LA SIDEBAR */
+.v2_6::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 271px;
+  height: 140px; /* Hauteur de la zone masquée */
+  background: rgba(150,149,135,1); /* Couleur solide, pas de dégradé */
+  z-index: 55;
+  pointer-events: none;
+}
+
+.v8_5 {
+  width: 130px;
+  background: url("../icons/v8_5.png");
+  opacity: 0.3799999952316284;
+  position: ficed;
+  top: 117px;
+  left: 71px;
+  border: 3px solid rgba(0,0,0,1);
+}
+
+.v8_10 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/typcn_home.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 40px 40px;
+  opacity: 1;
+  position: absolute;
+  top: 160px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_11 {
+  width: 62px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_19 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/ion_person-sharp.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 229px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_20 {
+  width: 70px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_29 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/Vector.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 298px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_30 {
+  width: 103px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_39 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/healthicons_travel.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 40px 40px;
+  opacity: 1;
+  position: absolute;
+  top: 367px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_40 {
+  width: 80px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_49 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/zondicons_travel-bus.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 436px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_50 {
+  width: 102px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_65 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/streamline-ultimate_trip-road-bold.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 505px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_66 {
+  width: 74px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_82 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/healthicons_truck-driver.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 40px 40px;
+  opacity: 1;
+  position: absolute;
+  top: 574px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_83 {
+  width: 121px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_91 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/tdesign_money-filled.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 643px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_92 {
+  width: 71px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_101 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/uil_bill.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 712px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_102 {
+  width: 93px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v4_8 {
+  width: calc(100% - 328px);
+  height: 3px;
+  background: url("../icons/v4_8.png");
+  background-size: cover;
+  opacity: 1;
+  position: fixed;
+  top: 115px;
+  left: 328px;
+  border: 3px solid rgba(150,149,135,1);
+  z-index: 200;
+}
+
+/* TITRE PRINCIPAL - RESTE FIXE EN HAUT */
+.v4_12 {
+  width: 407px;
+  color: rgba(0,0,0,1);
+  position: fixed;
+  top: 6px;
+  left: 622px;
+  font-family: 'Imperial Script', cursive;
+  font-weight: normal;
+  font-size: 90px;
+  opacity: 1;
+  text-align: left;
+  z-index: 200;
+}
+
+/* TITRE SIDEBAR - RESTE FIXE EN HAUT */
+.v8_2 {
+  width: 181px;
+  color: rgba(0,0,0,1);
+  position: fixed;
+  top: 50px;
+  left: 35px;
+  font-family: 'Imperial Script', cursive;
+  font-weight: normal;
+  font-size: 40px;
+  opacity: 1;
+  text-align: left;
+  z-index: 60;
+}
+
+.name {
+  color: #fff;
+}
+

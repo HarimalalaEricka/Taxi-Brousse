@@ -1,0 +1,229 @@
+/* RESET & BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* HEADER */
+header {
+    background-color: #969587;
+    color: white;
+    padding: 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+header a {
+    background-color: white;
+    color: #969587;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+header a:hover {
+    background-color: #D9D9D9;
+}
+
+/* MAIN & COMPTEUR */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+main h2 {
+    color: #969587;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+main > div:first-of-type {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+main > div:first-of-type h3 {
+    color: #969587;
+}
+
+main > div:first-of-type p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+main > div:first-of-type > div:last-child {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #969587;
+}
+
+/* VEHICULE INFO */
+main > div > h2 {
+    margin-top: 2rem;
+}
+
+main > div > p {
+    margin: 0.5rem 0;
+}
+
+h2 span {
+    font-weight: bold;
+}
+
+h3 {
+    color: #969587;
+    margin: 1.5rem 0 1rem;
+}
+
+/* ACTIONS VEHICULE */
+.vehicule-actions {
+    margin: 1rem 0;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.vehicule-actions a {
+    padding: 0.5rem 1.2rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.vehicule-actions a:first-child {
+    background-color: #D9D9D9;
+    color: #333;
+}
+
+.vehicule-actions a:first-child:hover {
+    background-color: #c0c0c0;
+}
+
+.vehicule-actions a:last-child {
+    background-color: #e8e8e8;
+    color: #666;
+}
+
+.vehicule-actions a:last-child:hover {
+    background-color: #d0d0d0;
+}
+
+/* TABLES */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #D9D9D9;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* EMPTY ROW */
+tbody tr.empty-row td {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+tbody tr.empty-row h3 {
+    color: #969587;
+    margin-bottom: 0.5rem;
+}
+
+tbody tr.empty-row p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+tbody tr.empty-row a {
+    display: inline-block;
+    background-color: #969587;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+tbody tr.empty-row a:hover {
+    background-color: #7d7c70;
+}
+
+/* FOOTER */
+footer {
+    background-color: #969587;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 3rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    main > div:first-of-type {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .vehicule-actions {
+        flex-direction: column;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    th, td {
+        padding: 0.75rem 0.5rem;
+    }
+}

@@ -2,6 +2,7 @@ package com.taxi.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "reservation")
@@ -18,10 +19,6 @@ public class Reservation {
 
     private String auNomDe;
 
-    @OneToOne
-    @JoinColumn(name = "id_billet", unique = true, nullable = false)
-    private Billet billet;
-
     @ManyToOne
     @JoinColumn(name = "id_facture", nullable = false)
     private Facture facture;
@@ -34,9 +31,13 @@ public class Reservation {
     @JoinColumn(name = "id_voyage", nullable = false)
     private Voyage voyage;
 
-    @OneToOne
-    @JoinColumn(name = "id_place", unique = true, nullable = false)
-    private Place place;
+    // AJOUT: Relation inverse avec Billet
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Billet> billets;
+
+    // AJOUT: Relation avec NbrPlaceReservation
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<NbrPlaceReservation> nbrPlaceReservations;
 
     public Long getIdReservation() {
         return idReservation;
@@ -70,14 +71,6 @@ public class Reservation {
         this.auNomDe = auNomDe;
     }
 
-    public Billet getBillet() {
-        return billet;
-    }
-
-    public void setBillet(Billet billet) {
-        this.billet = billet;
-    }
-
     public Facture getFacture() {
         return facture;
     }
@@ -102,11 +95,19 @@ public class Reservation {
         this.voyage = voyage;
     }
 
-    public Place getPlace() {
-        return place;
+    public List<Billet> getBillets() {
+        return billets;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setBillets(List<Billet> billets) {
+        this.billets = billets;
+    }
+
+    public List<NbrPlaceReservation> getNbrPlaceReservations() {
+        return nbrPlaceReservations;
+    }
+
+    public void setNbrPlaceReservations(List<NbrPlaceReservation> nbrPlaceReservations) {
+        this.nbrPlaceReservations = nbrPlaceReservations;
     }
 }

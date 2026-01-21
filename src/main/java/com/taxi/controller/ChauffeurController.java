@@ -1,14 +1,16 @@
 package com.taxi.controller;
 
-import com.taxi.models.Chauffeur;
+import com.taxi.models.*;
 import com.taxi.service.ChauffeurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/api/Chauffeur") // à adapter pour chaque entité, ex: /api/voyages
 public class ChauffeurController {
 
@@ -22,9 +24,15 @@ public class ChauffeurController {
     }
 
     // Lire toutes les entités
-    @GetMapping
-    public List<Chauffeur> getAll() {
-        return ChauffeurService.getAll();
+    @GetMapping("/list")
+    public String getAll(Model model) {
+        List<Chauffeur> chauffeurs = ChauffeurService.getAll();
+        model.addAttribute("chauffeurs", chauffeurs);
+        model.addAttribute("title", "Chauffeur");
+        model.addAttribute("content", "Chauffeur/list");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "reservation-list.css");
+        return "layout";
     }
 
     // Lire une entité par id
@@ -44,5 +52,29 @@ public class ChauffeurController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         ChauffeurService.delete(id);
+    }
+
+    @GetMapping("/createChauffeur")
+    public String createChauffeurForm( Model model)
+    {
+        model.addAttribute("title", "Chauffeur");
+        model.addAttribute("content", "Chauffeur/create_chauffeur");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", " input.css");
+        return "layout";
+    }
+    @PostMapping("/createChauffeur")
+    public String createChauffeurSubmit(@RequestParam String nom,
+                                     @RequestParam String prenom,
+                                     @RequestParam String telephone,
+                                     Model model) {
+        Chauffeur chauffeur = new Chauffeur();
+        chauffeur.setNom(nom);
+        chauffeur.setPrenom(prenom);
+        chauffeur.setTelephone(telephone);
+        chauffeur.setStatus(StatutUtilisateur.ACTIF);
+
+        ChauffeurService.create(chauffeur);
+        return "redirect:/api/Chauffeur/list";
     }
 }

@@ -1,0 +1,48 @@
+
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de Vehicule</h1>
+            </div>
+ 
+        </header>
+
+        <h2>Liste des Vehicules</h2>
+    
+        <form th:action="@{/api/Vehicule/createVehicule}" method="post">
+            
+            <div>
+                <label>Immatriculation :</label><br>
+                <input type="text" name="immatriculation" required>
+            </div>
+            
+            <br>
+            
+            <div>
+                <label>Nombre total de places :</label><br>
+                <input type="number" name="nombrePlaces" min="1" required>
+            </div>
+            
+            <br>
+            <hr>
+            
+            <h3>Places par Type</h3>
+            
+            <div th:each="type : ${types}">
+                <div>
+                    <label th:text="${type.type}"></label><br>
+                    <input type="number" 
+                        th:name="'typePlace_' + ${type.idTypePlace}"
+                        min="0" 
+                        value="0">
+                </div>
+            </div>
+            
+            <div>
+                <button type="submit">Créer</button>
+            </div>
+            
+        </form>
+    </div>
+</section>

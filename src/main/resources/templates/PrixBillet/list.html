@@ -1,0 +1,66 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion de PrixBillet</h1>
+            </div>
+            <a href="/api/PrixBillet/createPrixBillet">
+                Nouveau PrixBillet
+            </a>
+        </header>
+
+        <main>
+            <h2>Liste des PrixBillets</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Prix de Billets</h3>
+                    <p>Consultez et gérez tous vos Prix de Billets</p>
+                </div>
+                <div th:text="${prixBillets.size()}">0</div>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Date de debut</th>
+                            <th>Date de fin</th>
+                            <th>Prix</th>
+                            <th>Trajet</th>
+                            <th>Type de place</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${prixBillets.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucun PrixBillet trouvé</h3>
+                                    <p>Vous n'avez aucune PrixBillet pour le moment.</p>
+                                    <a href="/api/PrixBillet/createPrixBillet">
+                                        Créer une PrixBillet
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="prixBillet : ${prixBillets}">
+                        <td th:text="${prixBillet.dateDebut}">dateDebut</td>
+                        <td th:text="${prixBillet.dateFin}">dateFin</td>
+                        <td th:text="${prixBillet.prix}">prix</td>
+                        <td th:text="${prixBillet.trajet.villeDepart + ' → ' + prixBillet.trajet.villeArrivee}">trajet</td>
+                        <td th:text="${prixBillet.typePlace.type}">typePlace</td>
+                        <td>
+                            <a th:href="@{'/api/PrixBillet/edit' + ${prixBillet.idPrixBillet}}">Edit</a>
+                            <a th:href="@{'/api/PrixBillet/delete' + ${prixBillet.idPrixBillet}}">Supprimer</a>
+                        </td>
+                    </tr>
+                    </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

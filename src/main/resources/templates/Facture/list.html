@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Factures</title>
+</head>
+<body>
+    <h1>Factures</h1>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>État</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="facture : ${factures}">
+                <td th:text="${facture.numFacture}">Numéro</td>
+                <td th:text="${facture.date}">Date</td>
+                <td th:text="${facture.montant}">Montant</td>
+                <td th:text="${facture.etatPaiement?.etat}">État</td>
+                <td>
+                    <a th:href="@{'/api/Facture/' + ${facture.idFacture}}">Voir</a>
+                </td>
+            </tr>
+            
+            <tr th:if="${factures == null or factures.empty}">
+                <td colspan="5">Aucune facture trouvée</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

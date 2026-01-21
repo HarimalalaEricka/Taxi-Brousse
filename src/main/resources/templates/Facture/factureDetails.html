@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture N° <span th:text="${facture.numFacture}"></span></title>
+</head>
+<body>
+    <div>
+        <!-- En-tête de la facture -->
+        <div>
+            <div>
+                <div>
+                    <h1>FACTURE</h1>
+                    <h2 th:text="'N° ' + ${facture.numFacture}">N° FACT-001</h2>
+                    <p th:text="'Date : ' + ${facture.date}">Date : 01/01/2023</p>
+                    <p>Entreprise de Transport</p>
+                    <p>contact@transportbus.com</p>
+                    <p>+33 1 23 45 67 89</p>
+                </div>
+                <div>
+                    <p>État du paiement : 
+                        <span th:text="${facture.etatPaiement != null ? facture.etatPaiement.etat : 'NON DÉFINI'}">EN ATTENTE</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations du client -->
+        <div>
+            <h3>INFORMATIONS CLIENT</h3>
+            <div>
+                <div>
+                    <p><strong>Nom :</strong> 
+                        <span th:text="${utilisateur != null ? utilisateur.nom + ' ' + utilisateur.prenom : 'Non spécifié'}">Client Nom</span>
+                    </p>
+                    <p><strong>Email :</strong> 
+                        <span th:text="${utilisateur != null ? utilisateur.email : 'Non spécifié'}">client@example.com</span>
+                    </p>
+                </div>
+                <div>
+                    <p><strong>Téléphone :</strong> 
+                        <span th:text="${utilisateur != null ? utilisateur.telephone : 'Non spécifié'}">+33 0 00 00 00 00</span>
+                    </p>
+                    <p><strong>Adresse :</strong> 
+                        <span th:text="${utilisateur != null ? utilisateur.adresse : 'Non spécifié'}">Adresse client</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations de la réservation -->
+        <div>
+            <h3>INFORMATIONS DE LA RÉSERVATION</h3>
+            <div>
+                <div>
+                    <p><strong>N° Réservation :</strong> 
+                        <span th:text="${detailsPrix != null ? detailsPrix.idReservation : 'N/A'}">001</span>
+                    </p>
+                    <p><strong>Passager :</strong> 
+                        <span th:text="${detailsPrix != null ? detailsPrix.nomPassager : 'Non spécifié'}">Nom Passager</span>
+                    </p>
+                    <p><strong>Date réservation :</strong> 
+                        <span th:if="${reservation != null && reservation.dateReservation != null}"
+                              th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy HH:mm')}">
+                            01/01/2023 10:00
+                        </span>
+                        <span th:unless="${reservation != null && reservation.dateReservation != null}">
+                            Non spécifiée
+                        </span>
+                    </p>
+                </div>
+                <div>
+                    <p><strong>Trajet :</strong> 
+                        <span th:if="${trajet != null}"
+                              th:text="${trajet.villeDepart + ' → ' + trajet.villeArrivee}">
+                            Paris → Lyon
+                        </span>
+                        <span th:unless="${trajet != null}">
+                            Non spécifié
+                        </span>
+                    </p>
+                    <p><strong>Date voyage :</strong> 
+                        <span th:if="${voyage != null && voyage.dateDepart != null}"
+                              th:text="${#temporals.format(voyage.dateDepart, 'dd/MM/yyyy')}">
+                            01/01/2023
+                        </span>
+                        <span th:unless="${voyage != null && voyage.dateDepart != null}">
+                            Non spécifiée
+                        </span>
+                    </p>
+                    <p><strong>Heure départ :</strong> 
+                        <span th:text="${voyage != null ? voyage.heureDepart : 'Non spécifiée'}">14:30</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Détails des prix -->
+        <div th:if="${detailsLignes != null && !detailsLignes.empty}">
+            <h3>DÉTAILS DES BILLETS</h3>
+            
+            <table border="1" cellpadding="8" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Catégorie</th>
+                        <th>Type de Place</th>
+                        <th>Nombre</th>
+                        <th>Prix Unitaire</th>
+                        <th>Réduction</th>
+                        <th>Sous-total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="ligne : ${detailsLignes}">
+                        <td th:text="${ligne.categoriePersonne}">Adulte</td>
+                        <td th:text="${ligne.typePlace}">Standard</td>
+                        <td align="center" th:text="${ligne.nbrPlace}">1</td>
+                        <td align="right" th:text="${'Ar ' + #numbers.formatDecimal(ligne.prixUnitaire, 1, 2)}">Ar 50.00</td>
+                        <td align="right">
+                            <span th:if="${ligne.reductionPourcentage != null && ligne.reductionPourcentage > 0}" 
+                                  th:text="${'-' + #numbers.formatDecimal(ligne.reductionPourcentage, 1, 0) + '%'}">-10%</span>
+                            <span th:if="${ligne.reductionFixe != null && ligne.reductionFixe > 0}" 
+                                  th:text="${'-Ar ' + #numbers.formatDecimal(ligne.reductionFixe, 1, 2)}"></span>
+                            <span th:if="${(ligne.reductionPourcentage == null || ligne.reductionPourcentage == 0) && 
+                                           (ligne.reductionFixe == null || ligne.reductionFixe == 0)}">-</span>
+                        </td>
+                        <td align="right" th:text="${'Ar ' + #numbers.formatDecimal(ligne.sousTotal, 1, 2)}">Ar 45.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${detailsLignes == null || detailsLignes.empty}">
+            <p>Aucun détail de prix disponible</p>
+        </div>
+
+        <!-- Total -->
+        <div th:if="${detailsPrix != null}">
+            <table border="0" cellpadding="8" cellspacing="0" width="100%">
+                <tr>
+                    <td width="70%"></td>
+                    <td><strong>Nombre total de places :</strong></td>
+                    <td align="right" th:text="${detailsPrix.nombreTotalPlaces}">2</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong>Total réservation :</strong></td>
+                    <td align="right" th:text="${'Ar ' + #numbers.formatDecimal(detailsPrix.totalReservation, 1, 2)}">Ar 90.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong>TOTAL À PAYER :</strong></td>
+                    <td align="right">
+                        <strong th:text="${'Ar ' + #numbers.formatDecimal(detailsPrix.totalReservation, 1, 2)}">Ar 90.00</strong>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Notes -->
+        <div>
+            <h3>NOTES :</h3>
+            <ul>
+                <li>Merci pour votre confiance</li>
+                <li>Présentez cette facture lors de l'embarquement</li>
+                <li>Pour toute réclamation, contactez-nous dans les 48h</li>
+                <li>Modalités de paiement : 
+                    <span th:text="${facture != null && facture.etatPaiement != null && facture.etatPaiement.etat == 'PAYÉ' ? 'Payé' : 'À régler'}"></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Bouton d'impression -->
+        <div>
+            <button onclick="window.print()">Imprimer la facture</button>
+        </div>
+    </div>
+</body>
+</html>
