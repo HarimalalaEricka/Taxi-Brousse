@@ -1,0 +1,125 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion des Sociétés</h1>
+            </div>
+            <a href="/societe/create">
+                Nouvelle Société
+            </a>
+        </header>
+    </div>
+        
+        <main>
+            <h2>Liste des Sociétés</h2>
+            
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les sociétés</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterNom">Nom</label>
+                        <input type="text" id="filterNom" placeholder="Rechercher...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterAdresse">Adresse</label>
+                        <input type="text" id="filterAdresse" placeholder="Rechercher...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterPaiement">Paiement</label>
+                        <select id="filterPaiement">
+                            <option value="">Tous</option>
+                            <option value="solde">Soldé</option>
+                            <option value="impaye">Impayé</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterTable()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${societeStats.size()}">0</strong> société(s) trouvée(s)
+            </div>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Adresse</th>
+                        <th>Contact</th>
+                        <th>Montant Total</th>
+                        <th>Montant Payé</th>
+                        <th>Reste à Payer</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${societeStats.isEmpty()}">
+                        <td colspan="7" style="text-align: center; padding: 20px;">Aucune société</td>
+                    </tr>
+                    <tr th:each="stat : ${societeStats}">
+                        <td th:text="${stat.societe.nom}">Nom</td>
+                        <td th:text="${stat.societe.adresse}">Adresse</td>
+                        <td th:text="${stat.societe.contact}">Contact</td>
+                        <td th:text="${#numbers.formatDecimal(stat.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</td>
+                        <td style="color: green;" th:text="${#numbers.formatDecimal(stat.montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</td>
+                        <td th:style="${stat.resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) > 0} ? 'color: red;' : 'color: green;'" 
+                            th:text="${#numbers.formatDecimal(stat.resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</td>
+                        <td>
+                            <a th:href="@{'/societe/edit/' + ${stat.societe.idSociete}}">Modifier</a>
+                            <a th:href="@{'/societe/delete/' + ${stat.societe.idSociete}}">Supprimer</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+    <script>
+    function filterTable() {
+        const nom = document.getElementById('filterNom').value.toLowerCase().trim();
+        const adresse = document.getElementById('filterAdresse').value.toLowerCase().trim();
+        const paiement = document.getElementById('filterPaiement').value;
+        
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.querySelector('td[colspan]')) {
+                row.style.display = '';
+                return;
+            }
+            
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 0) return;
+            
+            const rowNom = (cells[0]?.textContent || '').toLowerCase().trim();
+            const rowAdresse = (cells[1]?.textContent || '').toLowerCase().trim();
+            const resteText = (cells[5]?.textContent || '0').replace(/[^0-9]/g, '');
+            const reste = parseInt(resteText) || 0;
+            
+            let show = true;
+            if (nom && !rowNom.includes(nom)) show = false;
+            if (adresse && !rowAdresse.includes(adresse)) show = false;
+            if (paiement === 'solde' && reste > 0) show = false;
+            if (paiement === 'impaye' && reste <= 0) show = false;
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterNom').value = '';
+        document.getElementById('filterAdresse').value = '';
+        document.getElementById('filterPaiement').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => row.style.display = '');
+        filterTable();
+    }
+    </script>
+</section>

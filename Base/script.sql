@@ -128,3 +128,63 @@ CREATE TABLE paiement (
     id_reservation INT UNIQUE,
     FOREIGN KEY (id_reservation) REFERENCES reservation(id_reservation)
 );
+
+-- =========================
+-- TABLE : SOCIETE
+-- =========================
+CREATE TABLE societe (
+    id_societe SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    adresse VARCHAR(255),
+    telephone VARCHAR(20),
+    email VARCHAR(100)
+);
+
+-- =========================
+-- TABLE : TYPE_PRESTATION
+-- =========================
+CREATE TABLE type_prestation (
+    id_type_prestation SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description VARCHAR(255)
+);
+
+-- =========================
+-- TABLE : TARIF_PRESTATION
+-- =========================
+CREATE TABLE tarif_prestation (
+    id_tarif_prestation SERIAL PRIMARY KEY,
+    id_type_prestation INT NOT NULL,
+    prix_unitaire DECIMAL(12,2) NOT NULL,
+    date_debut DATE NOT NULL,
+    date_fin DATE,
+    FOREIGN KEY (id_type_prestation) REFERENCES type_prestation(id_type_prestation)
+);
+
+-- =========================
+-- TABLE : PRESTATION
+-- =========================
+CREATE TABLE prestation (
+    id_prestation SERIAL PRIMARY KEY,
+    id_societe INT NOT NULL,
+    id_tarif_prestation INT NOT NULL,
+    id_etat_paiement INT NOT NULL,
+    id_voyage INT,
+    quantite INT NOT NULL DEFAULT 1,
+    date_prestation DATE NOT NULL,
+    FOREIGN KEY (id_societe) REFERENCES societe(id_societe),
+    FOREIGN KEY (id_tarif_prestation) REFERENCES tarif_prestation(id_tarif_prestation),
+    FOREIGN KEY (id_etat_paiement) REFERENCES etat_paiement(id_etat_paiement),
+    FOREIGN KEY (id_voyage) REFERENCES voyage(id_voyage)
+);
+
+-- =========================
+-- TABLE : PAIEMENT_PRESTATION
+-- =========================
+CREATE TABLE paiement_prestation (
+    id_paiement SERIAL PRIMARY KEY,
+    id_prestation INT NOT NULL,
+    montant DECIMAL(12,2) NOT NULL,
+    date_paiement DATE NOT NULL,
+    FOREIGN KEY (id_prestation) REFERENCES prestation(id_prestation)
+);

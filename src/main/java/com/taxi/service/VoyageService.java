@@ -106,7 +106,11 @@ public class VoyageService {
         double chiffreAffaireTotal = 0.0;
         
         // Récupérer toutes les réservations pour ce voyage
+        // Si reservation non payes mais estimation
         List<Reservation> reservations = reservationRepository.findByVoyage(voyage);
+
+        // si reservation payes
+        // List<Reservation> reservations = reservationRepository.findByVoyageAndFacturePayee(voyage);
         
         for (Reservation reservation : reservations) {
             // Récupérer les nbr_place_reservation pour cette réservation
@@ -136,6 +140,20 @@ public class VoyageService {
         
         return chiffreAffaireTotal;
     }
+
+    public double calculCAPrestations(Voyage voyage) {
+        double total = 0.0;
+        if (voyage.getPrestations() != null) {
+            for (Prestation p : voyage.getPrestations()) {
+                if (p.getTarifPrestation() != null) {
+                    double montant = p.getTarifPrestation().getPrixUnitaire().doubleValue() * p.getQuantite();
+                    total += montant;
+                }
+            }
+        }
+        return total;
+    }
+
     public List<VoyageValeur> getVoyagesWithValeurMax( List<Voyage> voyages)
     {
         List<VoyageValeur> result = new ArrayList<>();
@@ -143,8 +161,22 @@ public class VoyageService {
         {
             double valeurMax = calculValeurMax(v);
             double chiffreAffaire = calculChiffreAffaire(v);
-            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire) );
+            double caPrestation = calculCAPrestations(v);
+            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire, caPrestation) );
         }
         return result;
+    }
+
+    public List<Voyage> getByMoisAnnee(int mois, int annee) {
+        return VoyageRepository.findByMoisAndAnnee(mois, annee);
+    }
+
+    public double calculerCAVoyages(int mois, int annee) {
+        List<Voyage> voyages = VoyageRepository.findByMoisAndAnnee(mois, annee);
+        double total = 0.0;
+        for (Voyage v : voyages) {
+            total += calculChiffreAffaire(v);
+        }
+        return total;
     }
 }

@@ -7,11 +7,14 @@ public class VoyageValeur
     private Voyage voyage;
     private Double valeurMax;
     private Double chiffreAffaire;
-    public VoyageValeur(Voyage voyage, Double valeurMax, Double chiffreAffaire)
+    private Double caPrestation;
+
+    public VoyageValeur(Voyage voyage, Double valeurMax, Double chiffreAffaire, Double caPrestation)
     {
         this.voyage = voyage;
         this.valeurMax = valeurMax;
         this.chiffreAffaire = chiffreAffaire;
+        this.caPrestation = caPrestation;
     }
     public Voyage getVoyage() {
         return voyage;
@@ -32,5 +35,11 @@ public class VoyageValeur
     public void setChiffreAffaire( Double chiffreAffaire)
     {
         this.chiffreAffaire = chiffreAffaire;
+    }
+    public Double getCaPrestation() {
+        return caPrestation;
+    }
+    public void setCaPrestation(Double caPrestation) {
+        this.caPrestation = caPrestation;
     }
 }

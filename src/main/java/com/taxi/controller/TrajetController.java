@@ -79,4 +79,38 @@ public class TrajetController {
         TrajetService.create(trajet);
         return "redirect:/api/Trajet/list";
     }
+
+    @GetMapping("/delete/{id}")
+    public String deleteTrajet(@PathVariable Long id) {
+        TrajetService.delete(id);
+        return "redirect:/api/Trajet/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editTrajetForm(@PathVariable Long id, Model model) {
+        TrajetService.getById(id).ifPresent(trajet -> {
+            model.addAttribute("trajet", trajet);
+        });
+        model.addAttribute("title", "Modifier Trajet");
+        model.addAttribute("content", "Trajet/edit");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "input.css");
+        return "layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateTrajet(@PathVariable Long id,
+                               @RequestParam String villeDepart,
+                               @RequestParam String villeArrivee,
+                               @RequestParam BigDecimal distance,
+                               @RequestParam Integer duree) {
+        TrajetService.getById(id).ifPresent(trajet -> {
+            trajet.setVilleDepart(villeDepart);
+            trajet.setVilleArrivee(villeArrivee);
+            trajet.setDistance(distance);
+            trajet.setDureeEstimee(duree);
+            TrajetService.update(trajet);
+        });
+        return "redirect:/api/Trajet/list";
+    }
 }

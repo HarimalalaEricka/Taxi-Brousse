@@ -1,0 +1,69 @@
+<section th:fragment="content">
+    <div class="header">
+        <h1>Modifier le Voyage</h1>
+    </div>
+
+    <main class="main">
+        <form th:action="@{'/api/Voyage/edit/' + ${voyage.idVoyage}}" method="post">
+            
+            <div class="form-group">
+                <label for="idTrajet">Trajet</label>
+                <select id="idTrajet" name="idTrajet" required>
+                    <option th:each="trajet : ${trajets}" 
+                            th:value="${trajet.idTrajet}" 
+                            th:text="${trajet.villeDepart + ' → ' + trajet.villeArrivee}"
+                            th:selected="${voyage.trajet != null and voyage.trajet.idTrajet == trajet.idTrajet}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="idVehicule">Véhicule</label>
+                <select id="idVehicule" name="idVehicule" required>
+                    <option th:each="vehicule : ${vehicules}" 
+                            th:value="${vehicule.idVehicule}" 
+                            th:text="${vehicule.immatriculation + ' (' + vehicule.nombrePlaces + ' places)'}"
+                            th:selected="${voyage.vehicule != null and voyage.vehicule.idVehicule == vehicule.idVehicule}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="idChauffeur">Chauffeur</label>
+                <select id="idChauffeur" name="idChauffeur" required>
+                    <option th:each="chauffeur : ${chauffeurs}" 
+                            th:value="${chauffeur.idChauffeur}" 
+                            th:text="${chauffeur.nom + ' ' + chauffeur.prenom}"
+                            th:selected="${voyage.chauffeur != null and voyage.chauffeur.idChauffeur == chauffeur.idChauffeur}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="idEtatVoyage">État du Voyage</label>
+                <select id="idEtatVoyage" name="idEtatVoyage" required>
+                    <option th:each="etat : ${etats}" 
+                            th:value="${etat.idEtatVoyage}" 
+                            th:text="${etat.etat}"
+                            th:selected="${voyage.etatVoyage != null and voyage.etatVoyage.idEtatVoyage == etat.idEtatVoyage}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dateDepartStr">Date de Départ</label>
+                <input type="date" id="dateDepartStr" name="dateDepartStr" th:value="${voyage.dateDepart}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="heureDepartStr">Heure de Départ</label>
+                <input type="time" id="heureDepartStr" name="heureDepartStr" th:value="${voyage.heureDepart}" required>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/api/Voyage/list}" class="btn-cancel">Annuler</a>
+                <button type="submit" class="btn-submit">Enregistrer</button>
+            </div>
+        </form>
+    </main>
+</section>

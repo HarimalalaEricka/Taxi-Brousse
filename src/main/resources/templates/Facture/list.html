@@ -1,37 +1,126 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Liste des Factures</title>
-</head>
-<body>
-    <h1>Factures</h1>
-    
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Numéro</th>
-                <th>Date</th>
-                <th>Montant</th>
-                <th>État</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="facture : ${factures}">
-                <td th:text="${facture.numFacture}">Numéro</td>
-                <td th:text="${facture.date}">Date</td>
-                <td th:text="${facture.montant}">Montant</td>
-                <td th:text="${facture.etatPaiement?.etat}">État</td>
-                <td>
-                    <a th:href="@{'/api/Facture/' + ${facture.idFacture}}">Voir</a>
-                </td>
-            </tr>
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Système de Facture</h1>
+            </div>
+            <a href="/api/Reservation/reserver">
+                Nouvelle Facture
+            </a>
+        </header>
+    </div>
+        
+        <main>
+            <h2>Liste des Factures</h2>
             
-            <tr th:if="${factures == null or factures.empty}">
-                <td colspan="5">Aucune facture trouvée</td>
-            </tr>
-        </tbody>
-    </table>
-</body>
-</html>
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les factures</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterNumero">Numéro</label>
+                        <input type="text" id="filterNumero" placeholder="Rechercher...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterEtat">Etat</label>
+                        <select id="filterEtat">
+                            <option value="">Tous</option>
+                            <option value="paye">Payé</option>
+                            <option value="non paye">Non payé</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDate">Date</label>
+                        <input type="date" id="filterDate">
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterTable()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${factures.size()}">0</strong> facture(s) trouvée(s)
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>État</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${factures.isEmpty()}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucune facture trouvée</h3>
+                                    <p>Vous n'avez aucune facture pour le moment.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                         <tr th:each="facture : ${factures}">
+                            <td th:text="${facture.numFacture}">Numéro</td>
+                            <td th:text="${facture.date}">Date</td>
+                            <td th:text="${facture.montant}">Montant</td>
+                            <td th:text="${facture.etatPaiement?.etat}">État</td>
+                            <td>
+                                <a th:href="@{'/api/Facture/' + ${facture.idFacture}}">Voir</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    function filterTable() {
+        const numero = document.getElementById('filterNumero').value.toLowerCase().trim();
+        const etat = document.getElementById('filterEtat').value.toLowerCase().trim();
+        const date = document.getElementById('filterDate').value.trim();
+        
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.querySelector('td[colspan]')) {
+                row.style.display = '';
+                return;
+            }
+            
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 0) return;
+            
+            const rowNumero = (cells[0]?.textContent || '').toLowerCase().trim();
+            const rowDate = (cells[1]?.textContent || '').trim();
+            const rowEtat = (cells[3]?.textContent || '').toLowerCase().trim();
+            
+            let show = true;
+            if (numero && !rowNumero.includes(numero)) show = false;
+            if (etat && !rowEtat.includes(etat)) show = false;
+            if (date && !rowDate.includes(date)) show = false;
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterNumero').value = '';
+        document.getElementById('filterEtat').value = '';
+        document.getElementById('filterDate').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => row.style.display = '');
+        filterTable();
+    }
+    </script>
+</section>

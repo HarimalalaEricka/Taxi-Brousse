@@ -1,0 +1,32 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Nouveau Tarif</h2>
+    </div>
+    
+    <div class="main">
+        <form method="post" action="/tarif-prestation/create">
+            <div class="form-group">
+                <label for="typePrestation">Type de Prestation :</label>
+                <select id="typePrestation" name="typePrestation.idTypePrestation" required>
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="type : ${typePrestations}" th:value="${type.idTypePrestation}" th:text="${type.nom}">Type</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="prixUnitaire">Prix Unitaire (Ar) :</label>
+                <input type="number" id="prixUnitaire" name="prixUnitaire" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dateDebut">Date Début :</label>
+                <input type="date" id="dateDebut" name="dateDebut" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Enregistrer</button>
+                <a href="/tarif-prestation" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>

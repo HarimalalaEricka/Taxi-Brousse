@@ -13,12 +13,31 @@
         <main>
             <h2>Liste des Vehicules</h2>
             
-            <div>
-                <div>
-                    <h3>Total des Vehicules</h3>
-                    <p>Consultez et gérez tous vos Vehicules</p>
-                </div>
-                <div th:text="${vehiculesDetails.size()}">0</div>
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les véhicules</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterImmat">Immatriculation</label>
+                        <input type="text" id="filterImmat" placeholder="Rechercher...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterEtat">Etat</label>
+                        <select id="filterEtat">
+                            <option value="">Tous</option>
+                            <option value="disponible">Disponible</option>
+                            <option value="hors service">Hors service</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterVehicules()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${vehiculesDetails.size()}">0</strong> véhicule(s) trouvé(s)
             </div>
 
             <div th:each="detail : ${vehiculesDetails}">
@@ -58,11 +77,57 @@
                 <div class="vehicule-actions">
     
                 <a th:href="@{'/api/Vehicule/edit/' + ${detail.vehicule.idVehicule}}">Éditer</a>
-                    <a th:href="@{'/api/Vehicule/delete/' + ${detail.vehicule.idVehicule}}"
-                    onclick="return confirm('Supprimer ce véhicule ?')">Supprimer</a>
+                    <a th:if="${detail.vehicule.etatVehicule != null and detail.vehicule.etatVehicule.status != 'hors service'}" 
+                       th:href="@{'/api/Vehicule/horsService/' + ${detail.vehicule.idVehicule}}"
+                       onclick="return confirm('Mettre ce véhicule hors service ?')">Mettre hors service</a>
+                    <a th:if="${detail.vehicule.etatVehicule != null and detail.vehicule.etatVehicule.status == 'hors service'}" 
+                       th:href="@{'/api/Vehicule/disponible/' + ${detail.vehicule.idVehicule}}"
+                       onclick="return confirm('Remettre ce véhicule disponible ?')">Remettre disponible</a>
                 </div>
 
             </div>
         </main>
     </div>
+
+    <script>
+    function filterVehicules() {
+        const immat = document.getElementById('filterImmat').value.toLowerCase().trim();
+        const etat = document.getElementById('filterEtat').value.toLowerCase().trim();
+        
+        const vehiculeBlocks = document.querySelectorAll('main > div:not(.filter-section):not(.result-count)');
+        let visibleCount = 0;
+        
+        vehiculeBlocks.forEach(block => {
+            const h2 = block.querySelector('h2');
+            if (!h2) return;
+            
+            const blockImmat = (h2.textContent || '').toLowerCase().trim();
+            const paragraphs = block.querySelectorAll('p');
+            let blockEtat = '';
+            paragraphs.forEach(p => {
+                if (p.textContent.includes('État')) {
+                    const span = p.querySelector('span');
+                    blockEtat = (span?.textContent || '').toLowerCase().trim();
+                }
+            });
+            
+            let show = true;
+            if (immat && !blockImmat.includes(immat)) show = false;
+            if (etat && !blockEtat.includes(etat)) show = false;
+            
+            block.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterImmat').value = '';
+        document.getElementById('filterEtat').value = '';
+        const blocks = document.querySelectorAll('main > div:not(.filter-section):not(.result-count)');
+        blocks.forEach(block => block.style.display = '');
+        filterVehicules();
+    }
+    </script>
 </section>

@@ -3,6 +3,7 @@ package com.taxi.models;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "voyage")
@@ -85,5 +86,16 @@ public class Voyage {
 
     public void setVehicule(Vehicule vehicule) {
         this.vehicule = vehicule;
+    }
+
+    @OneToMany(mappedBy = "voyage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Prestation> prestations;
+
+    public List<Prestation> getPrestations() {
+        return prestations;
+    }
+
+    public void setPrestations(List<Prestation> prestations) {
+        this.prestations = prestations;
     }
 }

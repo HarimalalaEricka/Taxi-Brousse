@@ -12,12 +12,35 @@
         <main>
             <h2>Liste des Chauffeurs</h2>
             
-            <div>
-                <div>
-                    <h3>Total des Chauffeurs</h3>
-                    <p>Consultez et gérez tous vos Chauffeurs</p>
-                </div>
-                <div th:text="${chauffeurs.size()}">0</div>
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les chauffeurs</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterNom">Nom</label>
+                        <input type="text" id="filterNom" placeholder="Rechercher par nom...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterPrenom">Prénom</label>
+                        <input type="text" id="filterPrenom" placeholder="Rechercher par prénom...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStatus">Status</label>
+                        <select id="filterStatus">
+                            <option value="">Tous</option>
+                            <option value="ACTIF">Actif</option>
+                            <option value="INACTIF">Inactif</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterTable()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${chauffeurs.size()}">0</strong> chauffeur(s) trouvé(s)
             </div>
             
             <div>
@@ -50,8 +73,13 @@
                         <td th:text="${chauffeur.telephone}">Distance</td>
                         <td th:text="${chauffeur.status}">Duree</td>
                         <td>
-                            <a th:href="@{'/api/Chauffeur/edit' + ${chauffeur.idChauffeur}}">Edit</a>
-                            <a th:href="@{'/api/Chauffeur/delete' + ${chauffeur.idChauffeur}}">Supprimer</a>
+                            <a th:href="@{'/api/Chauffeur/edit/' + ${chauffeur.idChauffeur}}">Modifier</a>
+                            <a th:if="${chauffeur.status != null and chauffeur.status.name() == 'ACTIF'}" 
+                               th:href="@{'/api/Chauffeur/desactiver/' + ${chauffeur.idChauffeur}}"
+                               onclick="return confirm('Désactiver ce chauffeur ?')">Désactiver</a>
+                            <a th:if="${chauffeur.status == null or chauffeur.status.name() == 'INACTIF'}" 
+                               th:href="@{'/api/Chauffeur/activer/' + ${chauffeur.idChauffeur}}"
+                               onclick="return confirm('Activer ce chauffeur ?')">Activer</a>
                         </td>
                     </tr>
                 
@@ -60,4 +88,54 @@
             </div>
         </main>
     </div>
+
+    <script>
+    function filterTable() {
+        const nom = document.getElementById('filterNom').value.toLowerCase().trim();
+        const prenom = document.getElementById('filterPrenom').value.toLowerCase().trim();
+        const status = document.getElementById('filterStatus').value.toUpperCase().trim();
+        
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.querySelector('td[colspan]')) {
+                row.style.display = '';
+                return;
+            }
+            
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 0) return;
+            
+            const rowNom = (cells[0]?.textContent || '').toLowerCase().trim();
+            const rowPrenom = (cells[1]?.textContent || '').toLowerCase().trim();
+            const rowStatus = (cells[3]?.textContent || '').toUpperCase().trim();
+            
+            let show = true;
+            if (nom && !rowNom.includes(nom)) show = false;
+            if (prenom && !rowPrenom.includes(prenom)) show = false;
+            if (status && rowStatus !== status) show = false;
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterNom').value = '';
+        document.getElementById('filterPrenom').value = '';
+        document.getElementById('filterStatus').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => row.style.display = '');
+        document.querySelector('.result-count strong').textContent = document.querySelectorAll('tbody tr:not([style*="display: none"])').length - (document.querySelector('tbody tr td[colspan]') ? 1 : 0);
+    }
+    
+    // Afficher le count initial
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('tbody tr:not(:has(td[colspan]))');
+        document.querySelector('.result-count strong').textContent = rows.length;
+    });
+    </script>
 </section>

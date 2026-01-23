@@ -1,0 +1,50 @@
+<section th:fragment="content">
+    <div class="form-container">
+        <header>
+            <div>
+                <h1>Modifier la Catégorie</h1>
+            </div>
+            <a href="/api/CategoriePersonne/list">
+                Retour à la liste
+            </a>
+        </header>
+
+        <main>
+            <form action="/api/CategoriePersonne/update" method="post" class="form-card">
+                <input type="hidden" name="id" th:value="${categoriePersonne.idCategoriePersonne}">
+
+                <div class="form-group">
+                    <label for="categorie">Nom de la catégorie</label>
+                    <input type="text" id="categorie" name="categorie" th:value="${categoriePersonne.categorie}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reductionPourcentage">Réduction en pourcentage (%)</label>
+                    <input type="number" id="reductionPourcentage" name="reductionPourcentage" step="0.01" min="0" max="100" th:value="${categoriePersonne.reductionPourcentage}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reductionFixe">Réduction fixe (Ar)</label>
+                    <input type="number" id="reductionFixe" name="reductionFixe" step="0.01" min="0" th:value="${categoriePersonne.reductionFixe}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="typePlaceId">Type de place</label>
+                    <select id="typePlaceId" name="typePlaceId" required>
+                        <option th:each="tp : ${typePlaces}" 
+                                th:value="${tp.idTypePlace}" 
+                                th:text="${tp.type}"
+                                th:selected="${categoriePersonne.typePlace != null and categoriePersonne.typePlace.idTypePlace == tp.idTypePlace}">
+                            Type
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Enregistrer</button>
+                    <a href="/api/CategoriePersonne/list" class="btn-cancel">Annuler</a>
+                </div>
+            </form>
+        </main>
+    </div>
+</section>

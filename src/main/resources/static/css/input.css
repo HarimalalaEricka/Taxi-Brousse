@@ -236,3 +236,256 @@ input[type="date"], input[type="time"] {
     color: #333;
     cursor: pointer;
 }
+
+/* Header section */
+.header {
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(150,149,135,1), rgba(130,129,115,1));
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.header h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+/* Main content area */
+.main {
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main form {
+    max-width: 500px;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Textarea styling */
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #D9D9D9;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #969587;
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-actions button[type="submit"] {
+    width: auto;
+    margin-top: 0;
+    padding: 0.75rem 2rem;
+}
+
+.btn-cancel {
+    color: #969587;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.btn-cancel:hover {
+    color: #7d7c70;
+    text-decoration: underline;
+}
+
+/* Info card for payment details */
+.info-card {
+    background: linear-gradient(135deg, #f8f8f6, #eeede9);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    border-left: 4px solid #969587;
+}
+
+.info-card h3 {
+    color: #969587;
+    margin-bottom: 1rem;
+}
+
+.info-card p {
+    margin: 0.5rem 0;
+}
+
+.info-card hr {
+    border: none;
+    border-top: 1px solid #d9d9d9;
+    margin: 1rem 0;
+}
+
+.montant-total {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.montant-paye {
+    color: #4CAF50;
+}
+
+.montant-reste {
+    font-size: 1.2rem;
+    color: #e74c3c;
+}
+
+/* Historique card */
+.historique-card {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+}
+
+.historique-card h4 {
+    color: #2e7d32;
+    margin-bottom: 1rem;
+}
+
+.historique-card table {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* Success message */
+.success-message {
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    max-width: 600px;
+    color: #2e7d32;
+}
+
+/* Back link */
+.back-link {
+    margin-top: 2rem;
+}
+
+.back-link a {
+    color: #969587;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+/* Section title */
+.section-title {
+    color: #969587;
+    margin: 1.5rem 0 1rem 0;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #d9d9d9;
+    padding-bottom: 0.5rem;
+}
+
+/* Error message */
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #c62828;
+}
+
+/* Voyage grid for horaires */
+.voyage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.voyage-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.voyage-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.voyage-header {
+    background: linear-gradient(135deg, rgba(150,149,135,1), rgba(130,129,115,1));
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.voyage-trajet {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.voyage-body {
+    padding: 1rem;
+}
+
+.voyage-body p {
+    margin: 0.5rem 0;
+    color: #555;
+}
+
+.voyage-footer {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.btn-reserve {
+    display: inline-block;
+    background: linear-gradient(135deg, #969587, #7d7c70);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.btn-reserve:hover {
+    background: linear-gradient(135deg, #7d7c70, #6a695e);
+}
+
+.btn-action {
+    display: inline-block;
+    background: linear-gradient(135deg, #969587, #7d7c70);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 1rem;
+}

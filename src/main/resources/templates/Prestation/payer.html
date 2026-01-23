@@ -1,0 +1,78 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Paiement Prestation</h2>
+    </div>
+    
+    <div class="main">
+        <!-- Informations de la prestation -->
+        <div class="info-card">
+            <h3 th:text="${prestation.societe.nom}">Société</h3>
+            <p><strong>Type :</strong> <span th:text="${prestation.tarifPrestation.typePrestation.nom}">Type</span></p>
+            <p><strong>Date :</strong> <span th:text="${prestation.datePrestation}">Date</span></p>
+            <p><strong>Quantité :</strong> <span th:text="${prestation.quantite}">Quantité</span></p>
+            <p><strong>Prix Unitaire :</strong> <span th:text="${#numbers.formatDecimal(prestation.tarifPrestation.prixUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Prix</span></p>
+            <hr>
+            <p class="montant-total"><strong>Montant Total :</strong> 
+                <span th:text="${#numbers.formatDecimal(prestation.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Total</span>
+            </p>
+            <p class="montant-paye"><strong>Total Payé :</strong> 
+                <span th:text="${#numbers.formatDecimal(montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Payé</span>
+            </p>
+            <p class="montant-reste"><strong>Reste à Payer :</strong> 
+                <span th:text="${#numbers.formatDecimal(resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Reste</span>
+            </p>
+        </div>
+
+        <!-- Historique des paiements -->
+        <div th:if="${not #lists.isEmpty(paiements)}" class="historique-card">
+            <h4>Historique des paiements</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Montant</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${paiements}">
+                        <td th:text="${p.datePaiement}">Date</td>
+                        <td th:text="${#numbers.formatDecimal(p.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Montant</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Formulaire de paiement -->
+        <form th:if="${resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) > 0}" 
+              th:action="@{'/prestation/payer/' + ${prestation.idPrestation}}" method="post">
+            <div class="form-group">
+                <label for="montant">Montant à payer (Ar) :</label>
+                <input type="number" id="montant" name="montant" min="1" 
+                       th:max="${resteAPayer}" 
+                       th:value="${resteAPayer}"
+                       required>
+            </div>
+            
+            <div class="form-group">
+                <label for="datePaiement">Date du paiement :</label>
+                <input type="date" id="datePaiement" name="datePaiement" 
+                       th:value="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy-MM-dd')}"
+                       required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Enregistrer le paiement</button>
+                <a href="/prestation" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+
+        <!-- Message si entièrement payé -->
+        <div th:if="${resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) == 0}" class="success-message">
+            <strong>✓ Cette prestation est entièrement payée</strong>
+        </div>
+
+        <div class="back-link">
+            <a href="/prestation">← Retour à la liste</a>
+        </div>
+    </div>
+</section>

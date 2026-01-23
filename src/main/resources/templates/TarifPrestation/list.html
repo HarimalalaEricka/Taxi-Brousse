@@ -1,0 +1,58 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion des Tarifs des Prestations</h1>
+            </div>
+            <a href="/tarif-prestation/create">
+                Nouvelle Tarif
+            </a>
+        </header>
+    </div>
+        
+        <main>
+            <h2>Liste des Tarifs des Prestations</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Tarifs</h3>
+                    <p>Consultez et gérez tous vos Tarifs</p>
+                </div>
+                <div th:text="${tarifPrestations.size()}">0</div>
+            </div>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type de Prestation</th>
+                        <th>Prix Unitaire</th>
+                        <th>Date Début</th>
+                        <th>Date Fin</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${tarifPrestations.isEmpty()}">
+                        <td colspan="7" style="text-align: center; padding: 20px;">Aucun tarif</td>
+                    </tr>
+                        <tr th:each="tarif : ${tarifPrestations}">
+                        <td th:text="${tarif.idTarifPrestation}">ID</td>
+                        <td th:text="${tarif.typePrestation.nom}">Type</td>
+                        <td th:text="${#numbers.formatDecimal(tarif.prixUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Prix</td>
+                        <td th:text="${tarif.dateDebut}">Date Début</td>
+                        <td th:text="${tarif.dateFin != null ? tarif.dateFin : '-'}">Date Fin</td>
+                        <td>
+                            <span th:if="${tarif.dateFin == null}" style="color: green;">Actif</span>
+                            <span th:if="${tarif.dateFin != null}" style="color: gray;">Clôturé</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/tarif-prestation/edit/' + ${tarif.idTarifPrestation}}">Modifier</a>
+                            <a th:if="${tarif.dateFin == null}" th:href="@{'/tarif-prestation/cloturer/' + ${tarif.idTarifPrestation}}" onclick="return confirm('Clôturer ce tarif ?')">Clôturer</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+</section>

@@ -1,0 +1,29 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Nouvelle Société</h2>
+    </div>
+    
+    <div class="main">
+        <form method="post" action="/societe/create">
+            <div class="form-group">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="adresse">Adresse :</label>
+                <input type="text" id="adresse" name="adresse">
+            </div>
+            
+            <div class="form-group">
+                <label for="contact">Contact :</label>
+                <input type="text" id="contact" name="contact">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Enregistrer</button>
+                <a href="/societe" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,54 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Modifier Prestation</h2>
+    </div>
+    
+    <div class="main">
+        <form th:action="@{'/prestation/edit/' + ${prestation.idPrestation}}" method="post">
+            <div class="form-group">
+                <label for="societe">Société :</label>
+                <select id="societe" name="societe.idSociete" required>
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="s : ${societes}" th:value="${s.idSociete}" 
+                            th:selected="${prestation.societe != null && prestation.societe.idSociete == s.idSociete}"
+                            th:text="${s.nom}">Société</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tarifPrestation">Tarif (Type + Prix) :</label>
+                <select id="tarifPrestation" name="tarifPrestation.idTarifPrestation" required>
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="t : ${tarifPrestations}" th:value="${t.idTarifPrestation}" 
+                            th:selected="${prestation.tarifPrestation != null && prestation.tarifPrestation.idTarifPrestation == t.idTarifPrestation}"
+                            th:text="${t.typePrestation.nom} + ' - ' + ${#numbers.formatDecimal(t.prixUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Tarif</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="voyage">Voyage (optionnel) :</label>
+                <select id="voyage" name="voyage.idVoyage">
+                    <option value="">-- Aucun voyage --</option>
+                    <option th:each="v : ${voyages}" th:value="${v.idVoyage}" 
+                            th:selected="${prestation.voyage != null && prestation.voyage.idVoyage == v.idVoyage}"
+                            th:text="${v.trajet != null ? (v.trajet.villeDepart + ' → ' + v.trajet.villeArrivee) : 'Sans trajet'} + ' - ' + ${v.dateDepart}">Voyage</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="quantite">Quantité :</label>
+                <input type="number" id="quantite" name="quantite" min="1" th:value="${prestation.quantite}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="datePrestation">Date :</label>
+                <input type="date" id="datePrestation" name="datePrestation" th:value="${prestation.datePrestation}" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Enregistrer</button>
+                <a href="/prestation" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>

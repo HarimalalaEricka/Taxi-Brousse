@@ -1,0 +1,118 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion des Catégories de Personnes</h1>
+            </div>
+            <a href="/api/CategoriePersonne/create">
+                Nouvelle Catégorie
+            </a>
+        </header>
+
+        <main>
+            <h2>Liste des Catégories</h2>
+            
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les catégories</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterCategorie">Catégorie</label>
+                        <input type="text" id="filterCategorie" placeholder="Rechercher...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterTypePlace">Type de place</label>
+                        <input type="text" id="filterTypePlace" placeholder="Rechercher...">
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterTable()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${categories.size()}">0</strong> catégorie(s) trouvée(s)
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Réduction (%)</th>
+                            <th>Réduction Fixe</th>
+                            <th>Type de Place</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${categories.isEmpty()}">
+                            <td colspan="5">
+                                <div>
+                                    <h3>Aucune catégorie trouvée</h3>
+                                    <p>Vous n'avez aucune catégorie de personne pour le moment.</p>
+                                    <a href="/api/CategoriePersonne/create">
+                                        Créer une catégorie
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr th:each="cat : ${categories}">
+                            <td th:text="${cat.categorie}">Catégorie</td>
+                            <td th:text="${cat.reductionPourcentage} + '%'">0%</td>
+                            <td th:text="${cat.reductionFixe} + ' Ar'">0 Ar</td>
+                            <td th:text="${cat.typePlace?.type}">Type</td>
+                            <td>
+                                <a th:href="@{'/api/CategoriePersonne/edit/' + ${cat.idCategoriePersonne}}">Modifier</a>
+                                <a th:href="@{'/api/CategoriePersonne/delete/' + ${cat.idCategoriePersonne}}" 
+                                   onclick="return confirm('Supprimer cette catégorie ?')">Supprimer</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    function filterTable() {
+        const categorie = document.getElementById('filterCategorie').value.toLowerCase().trim();
+        const typePlace = document.getElementById('filterTypePlace').value.toLowerCase().trim();
+        
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.querySelector('td[colspan]')) {
+                row.style.display = '';
+                return;
+            }
+            
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 0) return;
+            
+            const rowCategorie = (cells[0]?.textContent || '').toLowerCase().trim();
+            const rowTypePlace = (cells[3]?.textContent || '').toLowerCase().trim();
+            
+            let show = true;
+            if (categorie && !rowCategorie.includes(categorie)) show = false;
+            if (typePlace && !rowTypePlace.includes(typePlace)) show = false;
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterCategorie').value = '';
+        document.getElementById('filterTypePlace').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => row.style.display = '');
+        filterTable();
+    }
+    </script>
+</section>

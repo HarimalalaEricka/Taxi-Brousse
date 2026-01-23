@@ -1,0 +1,34 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Modifier Trajet</h2>
+    </div>
+    
+    <div class="main">
+        <form th:action="@{'/api/Trajet/edit/' + ${trajet.idTrajet}}" method="post">
+            <div class="form-group">
+                <label for="villeDepart">Ville de départ :</label>
+                <input type="text" id="villeDepart" name="villeDepart" th:value="${trajet.villeDepart}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="villeArrivee">Ville d'arrivée :</label>
+                <input type="text" id="villeArrivee" name="villeArrivee" th:value="${trajet.villeArrivee}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="distance">Distance (km) :</label>
+                <input type="number" id="distance" name="distance" th:value="${trajet.distance}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="duree">Durée (en minutes) :</label>
+                <input type="number" id="duree" name="duree" th:value="${trajet.dureeEstimee}" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Enregistrer</button>
+                <a href="/api/Trajet/list" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>

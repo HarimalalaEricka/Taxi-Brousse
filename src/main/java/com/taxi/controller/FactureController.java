@@ -50,7 +50,11 @@ public class FactureController {
         
         model.addAttribute("factures", factures);
         model.addAttribute("reservationParFacture", reservationParFacture);
-        return "Facture/list";
+        model.addAttribute("title", "Factures");
+        model.addAttribute("content", "Facture/list");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "reservation-list.css");
+        return "layout";
     }
 
 // @GetMapping("/{id}")
@@ -119,8 +123,12 @@ public String getById(@PathVariable Long id, Model model) {
         model.addAttribute("voyage", reservation.getVoyage());
         model.addAttribute("trajet", reservation.getVoyage().getTrajet());
         model.addAttribute("utilisateur", facture.getUtilisateur());
+        model.addAttribute("title", "Détails Facture");
+        model.addAttribute("content", "Facture/factureDetails");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "reservation-list.css");
         
-        return "Facture/factureDetails";
+        return "layout";
         
     } catch (Exception e) {
         model.addAttribute("error", "Erreur: " + e.getMessage());

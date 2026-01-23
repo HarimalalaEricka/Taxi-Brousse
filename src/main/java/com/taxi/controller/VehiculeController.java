@@ -137,4 +137,55 @@ public String createVehiculeSubmit(@RequestParam String immatriculation,
 
     return "redirect:/api/Vehicule/list";
 }
+
+    @GetMapping("/delete/{id}")
+    public String deleteVehicule(@PathVariable Long id) {
+        VehiculeService.delete(id);
+        return "redirect:/api/Vehicule/list";
+    }
+
+    @GetMapping("/horsService/{id}")
+    public String horsServiceVehicule(@PathVariable Long id) {
+        VehiculeService.getById(id).ifPresent(vehicule -> {
+            etatVehiculeService.getByStatus("hors service").ifPresent(vehicule::setEtatVehicule);
+            VehiculeService.update(vehicule);
+        });
+        return "redirect:/api/Vehicule/list";
+    }
+
+    @GetMapping("/disponible/{id}")
+    public String disponibleVehicule(@PathVariable Long id) {
+        VehiculeService.getById(id).ifPresent(vehicule -> {
+            etatVehiculeService.getByStatus("disponible").ifPresent(vehicule::setEtatVehicule);
+            VehiculeService.update(vehicule);
+        });
+        return "redirect:/api/Vehicule/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editVehicule(@PathVariable Long id, Model model) {
+        VehiculeService.getById(id).ifPresent(vehicule -> {
+            model.addAttribute("vehicule", vehicule);
+        });
+        model.addAttribute("etats", etatVehiculeService.getAll());
+        model.addAttribute("title", "Modifier Véhicule");
+        model.addAttribute("content", "Vehicule/edit");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "input.css");
+        return "layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateVehicule(@PathVariable Long id,
+                                 @RequestParam String immatriculation,
+                                 @RequestParam Integer nombrePlaces,
+                                 @RequestParam Long idEtatVehicule) {
+        VehiculeService.getById(id).ifPresent(vehicule -> {
+            vehicule.setImmatriculation(immatriculation);
+            vehicule.setNombrePlaces(nombrePlaces);
+            etatVehiculeService.getById(idEtatVehicule).ifPresent(vehicule::setEtatVehicule);
+            VehiculeService.update(vehicule);
+        });
+        return "redirect:/api/Vehicule/list";
+    }
 }

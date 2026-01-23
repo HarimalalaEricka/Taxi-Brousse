@@ -1,0 +1,50 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Historique des Paiements Prestations</h1>
+            </div>
+        </header>
+    </div>
+        
+        <main>
+            
+            <div>
+                <div>
+                    <h3>Total des paiements :</h3>
+                    <p>Consultez et gérez tous vos paiements</p>
+                </div>
+                <span th:text="${#numbers.formatDecimal(totalPaiements, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</span>
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Société</th>
+                            <th>Type Prestation</th>
+                            <th>Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(paiements)}">
+                            <td colspan="6">
+                                <div>
+                                    <h3>Aucune paiement enregistré</h3>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                         <tr th:each="p : ${paiements}">
+                            <td th:text="${p.datePaiement}">Date</td>
+                            <td th:text="${p.prestation.societe.nom}">Société</td>
+                            <td th:text="${p.prestation.tarifPrestation.typePrestation.nom}">Type</td>
+                            <td style="padding: 10px; color: green; font-weight: bold;" th:text="${#numbers.formatDecimal(p.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Montant</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

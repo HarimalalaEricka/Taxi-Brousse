@@ -1,0 +1,40 @@
+<section th:fragment="content">
+    <div class="header">
+        <h1>Modifier le Véhicule</h1>
+    </div>
+
+    <main class="main">
+        <div class="info-card" style="margin-bottom: 20px;">
+            <p><strong>Note:</strong> La modification des places n'est pas disponible ici. Pour modifier les places, veuillez supprimer et recréer le véhicule.</p>
+        </div>
+
+        <form th:action="@{'/api/Vehicule/edit/' + ${vehicule.idVehicule}}" method="post">
+            
+            <div class="form-group">
+                <label for="immatriculation">Immatriculation</label>
+                <input type="text" id="immatriculation" name="immatriculation" th:value="${vehicule.immatriculation}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nombrePlaces">Nombre de Places</label>
+                <input type="number" id="nombrePlaces" name="nombrePlaces" th:value="${vehicule.nombrePlaces}" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="idEtatVehicule">État du Véhicule</label>
+                <select id="idEtatVehicule" name="idEtatVehicule" required>
+                    <option th:each="etat : ${etats}" 
+                            th:value="${etat.idEtatVehicule}" 
+                            th:text="${etat.status}"
+                            th:selected="${vehicule.etatVehicule != null and vehicule.etatVehicule.idEtatVehicule == etat.idEtatVehicule}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/api/Vehicule/list}" class="btn-cancel">Annuler</a>
+                <button type="submit" class="btn-submit">Enregistrer</button>
+            </div>
+        </form>
+    </main>
+</section>

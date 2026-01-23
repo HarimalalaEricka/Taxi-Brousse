@@ -12,12 +12,41 @@
         <main>
             <h2>Liste des voyages</h2>
             
-            <div>
-                <div>
-                    <h3>Total des voyages</h3>
-                    <p>Consultez et gérez tous vos voyages</p>
-                </div>
-                <div th:text="${valeursMax.size()}">0</div>
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les voyages</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterTrajet">Trajet</label>
+                        <input type="text" id="filterTrajet" placeholder="Ville départ ou arrivée...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterChauffeur">Chauffeur</label>
+                        <input type="text" id="filterChauffeur" placeholder="Nom du chauffeur...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterEtat">Etat</label>
+                        <select id="filterEtat">
+                            <option value="">Tous</option>
+                            <option value="en attente">En attente</option>
+                            <option value="en cours">En cours</option>
+                            <option value="termine">Terminé</option>
+                            <option value="annule">Annulé</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterDate">Date</label>
+                        <input type="date" id="filterDate">
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterTable()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${valeursMax.size()}">0</strong> voyage(s) trouvé(s)
             </div>
             
             <div>
@@ -31,13 +60,14 @@
                             <th>Chauffeur</th>
                             <th>Vehicule</th>
                             <th>Valeur Max</th>
-                            <th>Chiffre Affaire</th>
+                            <th>CA Billets</th>
+                            <th>CA Prestations</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:if="${valeursMax.isEmpty()}">
-                            <td colspan="6">
+                            <td colspan="10">
                                 <div>
                                     <h3>Aucun voyage trouvé</h3>
                                     <p>Vous n'avez aucune voyage pour le moment.</p>
@@ -56,10 +86,13 @@
                             <td th:text="${valeurMax.getVoyage().chauffeur.nom} + ' ' + ${valeurMax.getVoyage().chauffeur.prenom}">Chauffeur</td>
                             <td th:text="${valeurMax.getVoyage().vehicule.immatriculation} + '_' + ${valeurMax.getVoyage().vehicule.nombrePlaces} + 'places'">Vehicule</td>
                             <td th:text="${valeurMax.valeurMax}">Valeur Max</td>
-                            <td th:text="${valeurMax.chiffreAffaire}">Chiffre Affaire</td>
+                            <td th:text="${valeurMax.chiffreAffaire}">CA Billets</td>
+                            <td th:text="${valeurMax.caPrestation}">CA Prestations</td>
                             <td>
-                                <a th:href="@{'/api/voyage/edit/' + ${valeurMax.getVoyage().idVoyage}}">Editer</a>
-                                <a th:href="@{'/api/voyage/delete/' + ${valeurMax.getVoyage().idVoyage}}">Supprimer</a>
+                                <a th:href="@{'/api/Voyage/edit/' + ${valeurMax.getVoyage().idVoyage}}">Éditer</a>
+                                <a th:if="${valeurMax.getVoyage().etatVoyage != null and valeurMax.getVoyage().etatVoyage.etat != 'annule'}" 
+                                   th:href="@{'/api/Voyage/annuler/' + ${valeurMax.getVoyage().idVoyage}}"
+                                   onclick="return confirm('Annuler ce voyage ?')">Annuler</a>
                             </td>
                         </tr>
                     </tbody>
@@ -67,4 +100,52 @@
             </div>
         </main>
     </div>
+
+    <script>
+    function filterTable() {
+        const trajet = document.getElementById('filterTrajet').value.toLowerCase().trim();
+        const chauffeur = document.getElementById('filterChauffeur').value.toLowerCase().trim();
+        const etat = document.getElementById('filterEtat').value.toLowerCase().trim();
+        const date = document.getElementById('filterDate').value.trim();
+        
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.querySelector('td[colspan]')) {
+                row.style.display = '';
+                return;
+            }
+            
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 0) return;
+            
+            const rowDate = (cells[0]?.textContent || '').trim();
+            const rowTrajet = (cells[2]?.textContent || '').toLowerCase().trim();
+            const rowEtat = (cells[3]?.textContent || '').toLowerCase().trim();
+            const rowChauffeur = (cells[4]?.textContent || '').toLowerCase().trim();
+            
+            let show = true;
+            if (trajet && !rowTrajet.includes(trajet)) show = false;
+            if (chauffeur && !rowChauffeur.includes(chauffeur)) show = false;
+            if (etat && !rowEtat.includes(etat)) show = false;
+            if (date && !rowDate.includes(date)) show = false;
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterTrajet').value = '';
+        document.getElementById('filterChauffeur').value = '';
+        document.getElementById('filterEtat').value = '';
+        document.getElementById('filterDate').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => row.style.display = '');
+        filterTable();
+    }
+    </script>
 </section>

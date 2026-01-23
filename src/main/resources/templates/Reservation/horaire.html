@@ -1,48 +1,52 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horaire de la Réservation</title>
-</head>
-<body>
-    <h1>Horaires disponibles</h1>
+<section th:fragment="content">
+    <div class="header">
+        <h2>Horaires Disponibles</h2>
+    </div>
     
-    <!-- Vérifiez d'abord si la liste n'est pas vide -->
-    <div th:if="${voyages != null and !voyages.empty}">
-        <div class="info-box">
-            <p>Nombre d'horaires disponibles: <span th:text="${voyages.size()}" style="font-weight: 700; color: #e74c3c;"></span></p>
-        </div>
-        
-        <div class="voyage-list">
-            <!-- Boucle Thymeleaf correcte -->
-            <div class="voyage-item" th:each="voyage : ${voyages}">
-                <div class="voyage-details">
-                    <div class="time-date">
-                        Heure: 
-                        <span class="time" th:text="${voyage.heureDepart != null} ? 
-                            ${#temporals.format(voyage.heureDepart, 'HH:mm')} : 'Non spécifié'"></span>
-                        &nbsp;|&nbsp;
-                        Date: 
-                        <span class="date" th:text="${voyage.dateDepart != null} ? 
-                            ${#temporals.format(voyage.dateDepart, 'dd/MM/yyyy')} : 'Non spécifié'"></span>
+    <div class="main">
+        <!-- Vérifiez d'abord si la liste n'est pas vide -->
+        <div th:if="${voyages != null and !voyages.empty}">
+            <div class="info-card" style="margin-bottom: 1.5rem;">
+                <p><strong>Nombre d'horaires disponibles :</strong> 
+                    <span th:text="${voyages.size()}" class="montant-reste"></span>
+                </p>
+            </div>
+            
+            <div class="voyage-grid">
+                <!-- Boucle Thymeleaf -->
+                <div class="voyage-card" th:each="voyage : ${voyages}">
+                    <div class="voyage-header">
+                        <span class="voyage-trajet" th:text="${voyage.trajet.villeDepart} + ' → ' + ${voyage.trajet.villeArrivee}">Trajet</span>
                     </div>
-                    <a class="reserve-btn" th:href="@{/api/Reservation/list}">Réserver</a>
+                    <div class="voyage-body">
+                        <p>
+                            <strong>Date :</strong> 
+                            <span th:text="${voyage.dateDepart != null} ? ${#temporals.format(voyage.dateDepart, 'dd/MM/yyyy')} : 'Non spécifié'"></span>
+                        </p>
+                        <p>
+                            <strong>Heure :</strong> 
+                            <span th:text="${voyage.heureDepart != null} ? ${#temporals.format(voyage.heureDepart, 'HH:mm')} : 'Non spécifié'"></span>
+                        </p>
+                        <p>
+                            <strong>Véhicule :</strong> 
+                            <span th:text="${voyage.vehicule.immatriculation}"></span>
+                        </p>
+                    </div>
+                    <div class="voyage-footer">
+                        <a class="btn-reserve" th:href="@{'/api/Reservation/ReserverPlace?voyageId=' + ${voyage.idVoyage}}">Réserver ce voyage</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Message si pas de voyages -->
-    <div th:if="${voyages == null or voyages.empty}">
-        <div class="no-voyages">
-            <p>Aucun horaire disponible.</p>
+        
+        <!-- Message si pas de voyages -->
+        <div th:if="${voyages == null or voyages.empty}" class="info-card">
+            <p style="text-align: center; color: #666;">Aucun horaire disponible pour ce trajet.</p>
+        </div>
+        
+        <div class="form-actions" style="margin-top: 2rem;">
+            <a href="/api/Voyage/createVoyage" class="btn-action">Programmer un nouveau voyage</a>
+            <a href="/api/Reservation/reserver" class="btn-cancel">← Retour à la réservation</a>
         </div>
     </div>
-    
-    <div class="action-links">
-        <a class="link-btn" th:href="@{/api/Voyage/createVoyage}">Programmer un nouveau voyage</a>
-        <a class="link-btn back-btn" th:href="@{/api/Reservation/reserver}">← Retour à la réservation</a>
-    </div>
-</body>
-</html>
+</section>

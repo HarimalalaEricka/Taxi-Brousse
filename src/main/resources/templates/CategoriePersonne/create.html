@@ -1,0 +1,44 @@
+<section th:fragment="content">
+    <div class="form-container">
+        <header>
+            <div>
+                <h1>Nouvelle Catégorie de Personne</h1>
+            </div>
+            <a href="/api/CategoriePersonne/list">
+                Retour à la liste
+            </a>
+        </header>
+
+        <main>
+            <form action="/api/CategoriePersonne/create" method="post" class="form-card">
+                <div class="form-group">
+                    <label for="categorie">Nom de la catégorie</label>
+                    <input type="text" id="categorie" name="categorie" placeholder="Ex: Enfant, Étudiant, Senior..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reductionPourcentage">Réduction en pourcentage (%)</label>
+                    <input type="number" id="reductionPourcentage" name="reductionPourcentage" step="0.01" min="0" max="100" value="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reductionFixe">Réduction fixe (Ar)</label>
+                    <input type="number" id="reductionFixe" name="reductionFixe" step="0.01" min="0" value="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="typePlaceId">Type de place</label>
+                    <select id="typePlaceId" name="typePlaceId" required>
+                        <option value="">Sélectionner un type de place</option>
+                        <option th:each="tp : ${typePlaces}" th:value="${tp.idTypePlace}" th:text="${tp.type}">Type</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Créer la catégorie</button>
+                    <a href="/api/CategoriePersonne/list" class="btn-cancel">Annuler</a>
+                </div>
+            </form>
+        </main>
+    </div>
+</section>

@@ -13,26 +13,94 @@
 <div class="v1_4">
 
     <!-- SIDEBAR -->
-    <div class="v2_6">
-        <div class="v8_4"></div>
-        <div class="v8_5"></div>
-        <a href="/"><div class="v8_10"><span class="v8_11">HOME</span></div></a>
-        <div class="v8_19"><span class="v8_20">ADMIN</span></div>
-        <a href="/api/Reservation/list"><div class="v8_29"><span class="v8_30">RESERVER</span></div></a>
-        <a href="/api/Voyage/list"><div class="v8_39"><span class="v8_40">VOYAGE</span></div></a>
-        <a href="/api/Vehicule/list"><div class="v8_49"><span class="v8_50">VEHICULE</span></div></a>
-        <a href="/api/Trajet/list"><div class="v8_65"><span class="v8_66">TRAJET</span></div></a>
-        <a href="/api/Chauffeur/list"><div class="v8_82"><span class="v8_83">CHAUFFEUR</span></div></a>
-        <a href="/api/PrixBillet/list"><div class="v8_91"><span class="v8_92">PRIX</span></div></a>
-        <a href="/api/Facture/list"><div class="v8_101"><span class="v8_102">FACTURE</span></div></a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">Taxi-Brousse</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <!-- Module Principal -->
+            <div class="nav-group">
+                <a href="/" class="nav-item">
+                    <img src="/icons/typcn_home.svg" class="nav-icon" alt=""/>
+                    <span>HOME</span>
+                </a>
+            </div>
+            
+            <!-- Module Transport -->
+            <div class="nav-group">
+                <div class="nav-group-title">TRANSPORT</div>
+                <a href="/api/Reservation/list" class="nav-item">
+                    <img src="/icons/Vector.svg" class="nav-icon" alt=""/>
+                    <span>RESERVER</span>
+                </a>
+                <a href="/api/Voyage/list" class="nav-item">
+                    <img src="/icons/healthicons_travel.svg" class="nav-icon" alt=""/>
+                    <span>VOYAGE</span>
+                </a>
+                <a href="/api/Vehicule/list" class="nav-item">
+                    <img src="/icons/zondicons_travel-bus.svg" class="nav-icon" alt=""/>
+                    <span>VEHICULE</span>
+                </a>
+                <a href="/api/Trajet/list" class="nav-item">
+                    <img src="/icons/streamline-ultimate_trip-road-bold.svg" class="nav-icon" alt=""/>
+                    <span>TRAJET</span>
+                </a>
+                <a href="/api/Chauffeur/list" class="nav-item">
+                    <img src="/icons/healthicons_truck-driver.svg" class="nav-icon" alt=""/>
+                    <span>CHAUFFEUR</span>
+                </a>
+            </div>
+            
+            <!-- Module Facturation -->
+            <div class="nav-group">
+                <div class="nav-group-title">FACTURATION</div>
+                <a href="/api/PrixBillet/list" class="nav-item">
+                    <img src="/icons/tdesign_money-filled.svg" class="nav-icon" alt=""/>
+                    <span>PRIX DE BILLET</span>
+                </a>
+                <a href="/api/CategoriePersonne/list" class="nav-item">
+                    <img src="/icons/uil_bill.svg" class="nav-icon" alt=""/>
+                    <span>CATÉGORIES</span>
+                </a>
+                <a href="/api/Facture/list" class="nav-item">
+                    <img src="/icons/uil_bill.svg" class="nav-icon" alt=""/>
+                    <span>FACTURE</span>
+                </a>
+            </div>
+            
+            <!-- Module Prestations -->
+            <div class="nav-group">
+                <div class="nav-group-title">PRESTATIONS</div>
+                <a href="/prestation" class="nav-item">
+                    <img src="/icons/uil_bill.svg" class="nav-icon" alt=""/>
+                    <span>PRESTATIONS</span>
+                </a>
+                <a href="/prestation/historique" class="nav-item">
+                    <img src="/icons/uil_bill.svg" class="nav-icon" alt=""/>
+                    <span>PAIEMENTS</span>
+                </a>
+                <a href="/societe" class="nav-item">
+                    <img src="/icons/tdesign_money-filled.svg" class="nav-icon" alt=""/>
+                    <span>SOCIETES</span>
+                </a>
+                <a href="/type-prestation" class="nav-item">
+                    <img src="/icons/uil_bill.svg" class="nav-icon" alt=""/>
+                    <span>TYPES</span>
+                </a>
+                <a href="/tarif-prestation" class="nav-item">
+                    <img src="/icons/tdesign_money-filled.svg" class="nav-icon" alt=""/>
+                    <span>TARIFS</span>
+                </a>
+            </div>
+        </nav>
     </div>
     
     <!-- CONTENU DYNAMIQUE -->
     <main th:replace="~{${content} :: ${fragment}}"></main>
 
     <div class="v4_8"></div>
-    <a href="/"></a><span class="v4_12">Taxi-Brousse</span></a>
-    <a href="/"></a><span class="v8_2">Taxi-Brousse</span></a>
+    <span class="v4_12">Taxi-Brousse</span>
 
 </div>
 

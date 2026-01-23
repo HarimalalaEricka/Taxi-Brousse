@@ -1,0 +1,49 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Gestion des Types de Prestation</h1>
+            </div>
+            <a href="/type-prestation/create">
+                Nouvelle Type
+            </a>
+        </header>
+    </div>
+        
+        <main>
+            <h2>Liste des Types de Prestation</h2>
+            
+            <div>
+                <div>
+                    <h3>Total des Types de Prestation</h3>
+                    <p>Consultez et gérez tous vos Types de Prestation</p>
+                </div>
+                <div th:text="${typePrestations .size()}">0</div>
+            </div>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${typePrestations.isEmpty()}">
+                        <td colspan="4" style="text-align: center; padding: 20px;">Aucun type de prestation</td>
+                    </tr>
+                    <tr th:each="type : ${typePrestations}">
+                        <td th:text="${type.idTypePrestation}">ID</td>
+                        <td th:text="${type.nom}">Nom</td>
+                        <td th:text="${type.description}">Description</td>
+                        <td>
+                            <a th:href="@{'/type-prestation/edit/' + ${type.idTypePrestation}}">Modifier</a>
+                            <a th:href="@{'/type-prestation/delete/' + ${type.idTypePrestation}}">Supprimer</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+</section>

@@ -1,178 +1,164 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Facture N° <span th:text="${facture.numFacture}"></span></title>
-</head>
-<body>
-    <div>
-        <!-- En-tête de la facture -->
-        <div>
+<section th:fragment="content">
+    <div class="header">
+        <header>
             <div>
-                <div>
-                    <h1>FACTURE</h1>
-                    <h2 th:text="'N° ' + ${facture.numFacture}">N° FACT-001</h2>
-                    <p th:text="'Date : ' + ${facture.date}">Date : 01/01/2023</p>
-                    <p>Entreprise de Transport</p>
-                    <p>contact@transportbus.com</p>
-                    <p>+33 1 23 45 67 89</p>
-                </div>
-                <div>
-                    <p>État du paiement : 
-                        <span th:text="${facture.etatPaiement != null ? facture.etatPaiement.etat : 'NON DÉFINI'}">EN ATTENTE</span>
-                    </p>
-                </div>
+                <h1>Details Facture</h1>
             </div>
-        </div>
-
-        <!-- Informations du client -->
-        <div>
-            <h3>INFORMATIONS CLIENT</h3>
-            <div>
-                <div>
-                    <p><strong>Nom :</strong> 
-                        <span th:text="${utilisateur != null ? utilisateur.nom + ' ' + utilisateur.prenom : 'Non spécifié'}">Client Nom</span>
-                    </p>
-                    <p><strong>Email :</strong> 
-                        <span th:text="${utilisateur != null ? utilisateur.email : 'Non spécifié'}">client@example.com</span>
-                    </p>
-                </div>
-                <div>
-                    <p><strong>Téléphone :</strong> 
-                        <span th:text="${utilisateur != null ? utilisateur.telephone : 'Non spécifié'}">+33 0 00 00 00 00</span>
-                    </p>
-                    <p><strong>Adresse :</strong> 
-                        <span th:text="${utilisateur != null ? utilisateur.adresse : 'Non spécifié'}">Adresse client</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Informations de la réservation -->
-        <div>
-            <h3>INFORMATIONS DE LA RÉSERVATION</h3>
-            <div>
-                <div>
-                    <p><strong>N° Réservation :</strong> 
-                        <span th:text="${detailsPrix != null ? detailsPrix.idReservation : 'N/A'}">001</span>
-                    </p>
-                    <p><strong>Passager :</strong> 
-                        <span th:text="${detailsPrix != null ? detailsPrix.nomPassager : 'Non spécifié'}">Nom Passager</span>
-                    </p>
-                    <p><strong>Date réservation :</strong> 
-                        <span th:if="${reservation != null && reservation.dateReservation != null}"
-                              th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy HH:mm')}">
-                            01/01/2023 10:00
-                        </span>
-                        <span th:unless="${reservation != null && reservation.dateReservation != null}">
-                            Non spécifiée
-                        </span>
-                    </p>
-                </div>
-                <div>
-                    <p><strong>Trajet :</strong> 
-                        <span th:if="${trajet != null}"
-                              th:text="${trajet.villeDepart + ' → ' + trajet.villeArrivee}">
-                            Paris → Lyon
-                        </span>
-                        <span th:unless="${trajet != null}">
-                            Non spécifié
-                        </span>
-                    </p>
-                    <p><strong>Date voyage :</strong> 
-                        <span th:if="${voyage != null && voyage.dateDepart != null}"
-                              th:text="${#temporals.format(voyage.dateDepart, 'dd/MM/yyyy')}">
-                            01/01/2023
-                        </span>
-                        <span th:unless="${voyage != null && voyage.dateDepart != null}">
-                            Non spécifiée
-                        </span>
-                    </p>
-                    <p><strong>Heure départ :</strong> 
-                        <span th:text="${voyage != null ? voyage.heureDepart : 'Non spécifiée'}">14:30</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Détails des prix -->
-        <div th:if="${detailsLignes != null && !detailsLignes.empty}">
-            <h3>DÉTAILS DES BILLETS</h3>
+            <p th:text="${facture.date}">2026-01-20</p>
+        </header>
+    </div>
+    <main>
+            <h2>Liste des Factures</h2>
+            <h2 th:text="'N° ' + ${facture.numFacture}">N° FAC_20260120225517930</h2>
             
-            <table border="1" cellpadding="8" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>Catégorie</th>
-                        <th>Type de Place</th>
-                        <th>Nombre</th>
-                        <th>Prix Unitaire</th>
-                        <th>Réduction</th>
-                        <th>Sous-total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="ligne : ${detailsLignes}">
-                        <td th:text="${ligne.categoriePersonne}">Adulte</td>
-                        <td th:text="${ligne.typePlace}">Standard</td>
-                        <td align="center" th:text="${ligne.nbrPlace}">1</td>
-                        <td align="right" th:text="${'Ar ' + #numbers.formatDecimal(ligne.prixUnitaire, 1, 2)}">Ar 50.00</td>
-                        <td align="right">
-                            <span th:if="${ligne.reductionPourcentage != null && ligne.reductionPourcentage > 0}" 
-                                  th:text="${'-' + #numbers.formatDecimal(ligne.reductionPourcentage, 1, 0) + '%'}">-10%</span>
-                            <span th:if="${ligne.reductionFixe != null && ligne.reductionFixe > 0}" 
-                                  th:text="${'-Ar ' + #numbers.formatDecimal(ligne.reductionFixe, 1, 2)}"></span>
-                            <span th:if="${(ligne.reductionPourcentage == null || ligne.reductionPourcentage == 0) && 
-                                           (ligne.reductionFixe == null || ligne.reductionFixe == 0)}">-</span>
-                        </td>
-                        <td align="right" th:text="${'Ar ' + #numbers.formatDecimal(ligne.sousTotal, 1, 2)}">Ar 45.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div th:if="${detailsLignes == null || detailsLignes.empty}">
-            <p>Aucun détail de prix disponible</p>
-        </div>
+            <div>
+                <div>
+                    <h3>FACTURE</h3>
+                    <p th:text="${facture.date}">2026-01-20</p>
+                </div>
+                <div style="text-align: right;">
+                    <span th:if="${facture.etatPaiement != null && facture.etatPaiement.etat == 'paye'}" 
+                            style="display: inline-block; margin-top: 10px; background: #38ef7d; color: #1a1a2e; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 12px;">
+                        ✓ PAYÉ
+                    </span>
+                    <span th:if="${facture.etatPaiement == null || facture.etatPaiement.etat != 'paye'}" 
+                            style="display: inline-block; margin-top: 10px; background: #f5576c; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 12px;">
+                        EN ATTENTE
+                    </span>
+                </div>
+            </div>
 
-        <!-- Total -->
-        <div th:if="${detailsPrix != null}">
-            <table border="0" cellpadding="8" cellspacing="0" width="100%">
-                <tr>
-                    <td width="70%"></td>
-                    <td><strong>Nombre total de places :</strong></td>
-                    <td align="right" th:text="${detailsPrix.nombreTotalPlaces}">2</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><strong>Total réservation :</strong></td>
-                    <td align="right" th:text="${'Ar ' + #numbers.formatDecimal(detailsPrix.totalReservation, 1, 2)}">Ar 90.00</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><strong>TOTAL À PAYER :</strong></td>
-                    <td align="right">
-                        <strong th:text="${'Ar ' + #numbers.formatDecimal(detailsPrix.totalReservation, 1, 2)}">Ar 90.00</strong>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Notes -->
-        <div>
-            <h3>NOTES :</h3>
-            <ul>
-                <li>Merci pour votre confiance</li>
-                <li>Présentez cette facture lors de l'embarquement</li>
-                <li>Pour toute réclamation, contactez-nous dans les 48h</li>
-                <li>Modalités de paiement : 
-                    <span th:text="${facture != null && facture.etatPaiement != null && facture.etatPaiement.etat == 'PAYÉ' ? 'Payé' : 'À régler'}"></span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Bouton d'impression -->
-        <div>
-            <button onclick="window.print()">Imprimer la facture</button>
+    <div class="main">
+            <!-- Body -->
+            <div style="padding: 30px;">
+                
+                <!-- Client & Entreprise -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+                    <!-- Entreprise -->
+                    <div style="flex: 1;">
+                        <h3 style="color: #1a1a2e; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 2px solid #1a1a2e; padding-bottom: 5px; display: inline-block;">De</h3>
+                        <p style="margin: 5px 0; font-weight: bold; font-size: 16px;">Taxi-Brousse Transport</p>
+                        <p style="margin: 5px 0; color: #666;">Antananarivo, Madagascar</p>
+                        <p style="margin: 5px 0; color: #666;">contact@taxi-brousse.mg</p>
+                        <p style="margin: 5px 0; color: #666;">+261 34 00 000 00</p>
+                    </div>
+                    <!-- Client -->
+                    <div style="flex: 1; text-align: right;">
+                        <h3 style="color: #1a1a2e; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 2px solid #1a1a2e; padding-bottom: 5px; display: inline-block;">Facturé à</h3>
+                        <p style="margin: 5px 0; font-weight: bold; font-size: 16px;" th:text="${utilisateur != null ? utilisateur.nom + ' ' + utilisateur.prenom : 'Client'}">Client Nom</p>
+                        <p style="margin: 5px 0; color: #666;" th:text="${utilisateur != null ? utilisateur.email : '-'}">client@example.com</p>
+                        <p style="margin: 5px 0; color: #666;" th:text="${utilisateur != null ? utilisateur.telephone : '-'}">+261 00 000 00</p>
+                        <p style="margin: 5px 0; color: #666;" th:text="${utilisateur != null ? utilisateur.adresse : '-'}">Adresse</p>
+                    </div>
+                </div>
+                
+                <!-- Infos Voyage -->
+                <div style="background: rgba(130,129,115,1); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-around; text-align: center;">
+                        <div>
+                            <p style="font-size: 12px; opacity: 0.8; margin: 0;">DÉPART</p>
+                            <p style="font-size: 20px; font-weight: bold; margin: 5px 0;" th:text="${trajet != null ? trajet.villeDepart : 'N/A'}">Ville Départ</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div>
+                            <p style="font-size: 12px; opacity: 0.8; margin: 0;">ARRIVÉE</p>
+                            <p style="font-size: 20px; font-weight: bold; margin: 5px 0;" th:text="${trajet != null ? trajet.villeArrivee : 'N/A'}">Ville Arrivée</p>
+                        </div>
+                        <div style="border-left: 1px solid rgba(255,255,255,0.3); padding-left: 20px;">
+                            <p style="font-size: 12px; opacity: 0.8; margin: 0;">DATE</p>
+                            <p style="font-size: 20px; font-weight: bold; margin: 5px 0;" th:if="${voyage != null}" th:text="${voyage.dateDepart}">01/01/2023</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 12px; opacity: 0.8; margin: 0;">HEURE</p>
+                            <p style="font-size: 20px; font-weight: bold; margin: 5px 0;" th:text="${voyage != null ? voyage.heureDepart : '-'}">14:30</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Réservation Info -->
+                <div style="background: #f8f9fa; padding: 15px 20px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between;">
+                    <div>
+                        <span style="color: #666; font-size: 12px;">N° Réservation</span>
+                        <p style="margin: 0; font-weight: bold;" th:text="${detailsPrix != null ? detailsPrix.idReservation : 'N/A'}">#001</p>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 12px;">Passager</span>
+                        <p style="margin: 0; font-weight: bold;" th:text="${detailsPrix != null ? detailsPrix.nomPassager : '-'}">Nom Passager</p>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 12px;">Date réservation</span>
+                        <p style="margin: 0; font-weight: bold;" th:if="${reservation != null && reservation.dateReservation != null}" th:text="${#temporals.format(reservation.dateReservation, 'dd/MM/yyyy HH:mm')}">01/01/2023</p>
+                    </div>
+                </div>
+                
+                <!-- Tableau des billets -->
+                <h3 style="color: #1a1a2e; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Détails des billets</h3>
+                
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Type Place</th>
+                            <th>Qté</th>
+                            <th>Prix Unit.</th>
+                            <th>Sous-total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ligne : ${detailsLignes}">
+                            <td th:text="${ligne.categoriePersonne}">Adulte</td>
+                            <td th:text="${ligne.typePlace}">Standard</td>
+                            <td th:text="${ligne.nbrPlace}">1</td>
+                            <td th:text="${#numbers.formatDecimal(ligne.prixUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">50,000 Ar</td>
+                            <td th:text="${#numbers.formatDecimal(ligne.sousTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">45,000 Ar</td>
+                        </tr>
+                        <tr th:if="${detailsLignes == null || detailsLignes.empty}">
+                            <td colspan="6" style="padding: 20px; text-align: center; color: #999;">Aucun détail disponible</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- Totaux -->
+                <div style="display: flex; justify-content: flex-end;">
+                    <div style="width: 300px;">
+                        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                            <span style="color: #666;">Nombre de places</span>
+                            <span style="font-weight: bold;" th:text="${detailsPrix != null ? detailsPrix.nombreTotalPlaces : 0}">2</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 15px 0; background: rgba(130,129,115,1); color: white; margin-top: 10px; border-radius: 8px; padding: 15px;">
+                            <span style="font-size: 16px; font-weight: bold;">TOTAL À PAYER</span>
+                            <span style="font-size: 20px; font-weight: bold;" th:text="${detailsPrix != null ? #numbers.formatDecimal(detailsPrix.totalReservation, 0, 'COMMA', 0, 'POINT') + ' Ar' : '0 Ar'}">90,000 Ar</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notes -->
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee;">
+                    <h4 style="color: #1a1a2e; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Notes & Conditions</h4>
+                    <ul style="color: #666; font-size: 13px; margin: 0; padding-left: 20px;">
+                        <li style="margin-bottom: 5px;">Merci pour votre confiance</li>
+                        <li style="margin-bottom: 5px;">Présentez cette facture lors de l'embarquement</li>
+                        <li style="margin-bottom: 5px;">Pour toute réclamation, contactez-nous dans les 48h</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div style="background: #f8f9fa; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="color: #999; font-size: 12px;">
+                    <p style="margin: 0;">Taxi-Brousse Transport © 2025</p>
+                </div>
+                <div>
+                    <button onclick="window.print()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                        🖨️ Imprimer la facture
+                    </button>
+                </div>
+            </div>
+        
+        <!-- Retour -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/api/Facture/list" style="color: #667eea; text-decoration: none; font-size: 14px;">← Retour à la liste des factures</a>
         </div>
     </div>
-</body>
-</html>
+</main>
+</section>

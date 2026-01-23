@@ -1,0 +1,52 @@
+<section th:fragment="content">
+    <div class="header">
+        <h1>Modifier le Prix Billet</h1>
+    </div>
+
+    <main class="main">
+        <form th:action="@{'/api/PrixBillet/edit/' + ${prixBillet.idPrixBillet}}" method="post">
+            
+            <div class="form-group">
+                <label for="prix">Prix (Ar)</label>
+                <input type="number" id="prix" name="prix" th:value="${prixBillet.prix}" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateDebut">Date de Début</label>
+                <input type="date" id="dateDebut" name="dateDebut" th:value="${prixBillet.dateDebut}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateFin">Date de Fin (optionnel)</label>
+                <input type="date" id="dateFin" name="dateFin" th:value="${prixBillet.dateFin}">
+            </div>
+
+            <div class="form-group">
+                <label for="trajetId">Trajet</label>
+                <select id="trajetId" name="trajetId" required>
+                    <option th:each="trajet : ${trajets}" 
+                            th:value="${trajet.idTrajet}" 
+                            th:text="${trajet.villeDepart + ' → ' + trajet.villeArrivee}"
+                            th:selected="${prixBillet.trajet != null and prixBillet.trajet.idTrajet == trajet.idTrajet}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="typePlaceId">Type de Place</label>
+                <select id="typePlaceId" name="typePlaceId" required>
+                    <option th:each="type : ${types}" 
+                            th:value="${type.idTypePlace}" 
+                            th:text="${type.type}"
+                            th:selected="${prixBillet.typePlace != null and prixBillet.typePlace.idTypePlace == type.idTypePlace}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/api/PrixBillet/list}" class="btn-cancel">Annuler</a>
+                <button type="submit" class="btn-submit">Enregistrer</button>
+            </div>
+        </form>
+    </main>
+</section>

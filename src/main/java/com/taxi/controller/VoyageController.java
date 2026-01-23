@@ -110,8 +110,61 @@ public class VoyageController {
         EtatVoyage etatVoyage = etatVoyageService.getById(1L).orElse(null);
         voyage.setEtatVoyage(etatVoyage);
         VoyageService.create(voyage);
-        List<Voyage> voyages = VoyageService.getAll();
-        model.addAttribute("voyages", voyages);
-        return "Voyage/list";
+        return "redirect:/api/Voyage/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteVoyage(@PathVariable Long id) {
+        VoyageService.delete(id);
+        return "redirect:/api/Voyage/list";
+    }
+
+    @GetMapping("/annuler/{id}")
+    public String annulerVoyage(@PathVariable Long id) {
+        VoyageService.getById(id).ifPresent(voyage -> {
+            // L'état "annule" a l'ID 4 dans la base de données
+            etatVoyageService.getById(4L).ifPresent(voyage::setEtatVoyage);
+            VoyageService.update(voyage);
+        });
+        return "redirect:/api/Voyage/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editVoyage(@PathVariable Long id, Model model) {
+        VoyageService.getById(id).ifPresent(voyage -> {
+            model.addAttribute("voyage", voyage);
+        });
+        model.addAttribute("trajets", trajetService.getAll());
+        model.addAttribute("chauffeurs", chauffeurService.getAll());
+        model.addAttribute("vehicules", vehiculeService.getAll());
+        model.addAttribute("etats", etatVoyageService.getAll());
+        model.addAttribute("title", "Modifier Voyage");
+        model.addAttribute("content", "Voyage/edit");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "input.css");
+        return "layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateVoyage(@PathVariable Long id,
+                               @RequestParam Long idTrajet,
+                               @RequestParam Long idVehicule,
+                               @RequestParam Long idChauffeur,
+                               @RequestParam Long idEtatVoyage,
+                               @RequestParam String dateDepartStr,
+                               @RequestParam String heureDepartStr) {
+        LocalDate dateDepart = LocalDate.parse(dateDepartStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        LocalTime heureDepart = LocalTime.parse(heureDepartStr, DateTimeFormatter.ISO_LOCAL_TIME);
+        
+        VoyageService.getById(id).ifPresent(voyage -> {
+            trajetService.getById(idTrajet).ifPresent(voyage::setTrajet);
+            vehiculeService.getById(idVehicule).ifPresent(voyage::setVehicule);
+            chauffeurService.getById(idChauffeur).ifPresent(voyage::setChauffeur);
+            etatVoyageService.getById(idEtatVoyage).ifPresent(voyage::setEtatVoyage);
+            voyage.setDateDepart(dateDepart);
+            voyage.setHeureDepart(heureDepart);
+            VoyageService.update(voyage);
+        });
+        return "redirect:/api/Voyage/list";
     }
 }

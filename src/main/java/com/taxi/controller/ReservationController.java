@@ -229,9 +229,13 @@ public class ReservationController {
             System.out.println("Voyages en cours trouvés: " + voyages.size());
             
             model.addAttribute("voyages", voyages);
+            model.addAttribute("title", "Horaires Disponibles");
+            model.addAttribute("content", "Reservation/horaire");
+            model.addAttribute("fragment", "content");
+            model.addAttribute("pageCss", "input.css");
             
             System.out.println("=== FIN POST /horaire - Redirection vers horaire.html ===");
-            return "Reservation/horaire";
+            return "layout";
             
         } catch (Exception e) {
             System.err.println("=== ERREUR dans POST /horaire ===");
@@ -515,5 +519,46 @@ public class ReservationController {
         }
     }
 
-    
+    @GetMapping("/delete/{id}")
+    public String deleteReservation(@PathVariable Long id) {
+        ReservationService.delete(id);
+        return "redirect:/api/Reservation/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editReservation(@PathVariable Long id, Model model) {
+        ReservationService.getById(id).ifPresent(reservation -> {
+            model.addAttribute("reservation", reservation);
+        });
+        model.addAttribute("voyages", voyageService.getAll());
+        model.addAttribute("utilisateurs", utilisateurService.getAll());
+        model.addAttribute("title", "Modifier Réservation");
+        model.addAttribute("content", "Reservation/edit");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "input.css");
+        return "layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateReservation(@PathVariable Long id,
+                                    @RequestParam String auNomDe,
+                                    @RequestParam Long voyageId,
+                                    @RequestParam Long utilisateurId) {
+        ReservationService.getById(id).ifPresent(reservation -> {
+            reservation.setAuNomDe(auNomDe);
+            voyageService.getById(voyageId).ifPresent(reservation::setVoyage);
+            utilisateurService.getById(utilisateurId).ifPresent(reservation::setUtilisateur);
+            ReservationService.update(reservation);
+        });
+        return "redirect:/api/Reservation/list";
+    }
+
+    @GetMapping("/cancel/{id}")
+    public String cancelReservation(@PathVariable Long id) {
+        ReservationService.getById(id).ifPresent(reservation -> {
+            reservation.setStatut(StatusReservation.ANNULEE);
+            ReservationService.update(reservation);
+        });
+        return "redirect:/api/Reservation/list";
+    }
 }

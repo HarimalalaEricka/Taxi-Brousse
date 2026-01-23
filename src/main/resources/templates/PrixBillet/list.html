@@ -12,12 +12,35 @@
         <main>
             <h2>Liste des PrixBillets</h2>
             
-            <div>
-                <div>
-                    <h3>Total des Prix de Billets</h3>
-                    <p>Consultez et gérez tous vos Prix de Billets</p>
-                </div>
-                <div th:text="${prixBillets.size()}">0</div>
+            <!-- Section Filtres -->
+            <div class="filter-section">
+                <h3>Filtrer les prix</h3>
+                <form class="filter-form" id="filterForm">
+                    <div class="filter-group">
+                        <label for="filterTrajet">Trajet</label>
+                        <input type="text" id="filterTrajet" placeholder="Ville départ ou arrivée...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterType">Type de place</label>
+                        <input type="text" id="filterType" placeholder="Type...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStatut">Statut</label>
+                        <select id="filterStatut">
+                            <option value="">Tous</option>
+                            <option value="actif">Actif</option>
+                            <option value="cloture">Clôturé</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn-filter btn-filter-apply" onclick="filterTable()">Filtrer</button>
+                        <a href="#" class="btn-filter btn-filter-reset" onclick="resetFilters()">Réinitialiser</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${prixBillets.size()}">0</strong> prix trouvé(s)
             </div>
             
             <div>
@@ -52,10 +75,12 @@
                         <td th:text="${prixBillet.trajet.villeDepart + ' → ' + prixBillet.trajet.villeArrivee}">trajet</td>
                         <td th:text="${prixBillet.typePlace.type}">typePlace</td>
                         <td>
-                            <a th:href="@{'/api/PrixBillet/edit' + ${prixBillet.idPrixBillet}}">Edit</a>
-                            <a th:href="@{'/api/PrixBillet/delete' + ${prixBillet.idPrixBillet}}">Supprimer</a>
+                            <a th:href="@{'/api/PrixBillet/edit/' + ${prixBillet.idPrixBillet}}">Modifier</a>
+                            <a th:if="${prixBillet.dateFin == null}" 
+                               th:href="@{'/api/PrixBillet/cloturer/' + ${prixBillet.idPrixBillet}}" 
+                               onclick="return confirm('Clôturer ce prix ?')">Clôturer</a>
+                            <span th:if="${prixBillet.dateFin != null}" style="color: gray;">Clôturé</span>
                         </td>
-                    </tr>
                     </tr>
                 
                     </tbody>
@@ -63,4 +88,50 @@
             </div>
         </main>
     </div>
+
+    <script>
+    function filterTable() {
+        const trajet = document.getElementById('filterTrajet').value.toLowerCase().trim();
+        const type = document.getElementById('filterType').value.toLowerCase().trim();
+        const statut = document.getElementById('filterStatut').value;
+        
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            if (row.querySelector('td[colspan]')) {
+                row.style.display = '';
+                return;
+            }
+            
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 0) return;
+            
+            const dateFin = (cells[1]?.textContent || '').trim();
+            const rowTrajet = (cells[3]?.textContent || '').toLowerCase().trim();
+            const rowType = (cells[4]?.textContent || '').toLowerCase().trim();
+            const isCloture = dateFin !== '' && dateFin !== 'null' && dateFin !== '-';
+            
+            let show = true;
+            if (trajet && !rowTrajet.includes(trajet)) show = false;
+            if (type && !rowType.includes(type)) show = false;
+            if (statut === 'actif' && isCloture) show = false;
+            if (statut === 'cloture' && !isCloture) show = false;
+            
+            row.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        document.querySelector('.result-count strong').textContent = visibleCount;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterTrajet').value = '';
+        document.getElementById('filterType').value = '';
+        document.getElementById('filterStatut').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => row.style.display = '');
+        filterTable();
+    }
+    </script>
 </section>

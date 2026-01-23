@@ -1,48 +1,35 @@
 
 <section th:fragment="content">
-    <div>
-        <header>
-            <div>
-                <h1>Gestion de Vehicule</h1>
-            </div>
- 
-        </header>
+    <div class="header">
+        <h2>Nouveau Véhicule</h2>
+    </div>
 
-        <h2>Liste des Vehicules</h2>
-    
+    <div class="main">
         <form th:action="@{/api/Vehicule/createVehicule}" method="post">
-            
-            <div>
-                <label>Immatriculation :</label><br>
-                <input type="text" name="immatriculation" required>
+            <div class="form-group">
+                <label for="immatriculation">Immatriculation :</label>
+                <input type="text" id="immatriculation" name="immatriculation" required>
             </div>
             
-            <br>
-            
-            <div>
-                <label>Nombre total de places :</label><br>
-                <input type="number" name="nombrePlaces" min="1" required>
+            <div class="form-group">
+                <label for="nombrePlaces">Nombre total de places :</label>
+                <input type="number" id="nombrePlaces" name="nombrePlaces" min="1" required>
             </div>
             
-            <br>
-            <hr>
+            <h3 class="section-title">Places par Type</h3>
             
-            <h3>Places par Type</h3>
-            
-            <div th:each="type : ${types}">
-                <div>
-                    <label th:text="${type.type}"></label><br>
-                    <input type="number" 
-                        th:name="'typePlace_' + ${type.idTypePlace}"
-                        min="0" 
-                        value="0">
-                </div>
+            <div th:each="type : ${types}" class="form-group">
+                <label th:text="${type.type}"></label>
+                <input type="number" 
+                    th:name="'typePlace_' + ${type.idTypePlace}"
+                    min="0" 
+                    value="0">
             </div>
             
-            <div>
-                <button type="submit">Créer</button>
+            <div class="form-actions">
+                <button type="submit">Enregistrer</button>
+                <a href="/api/Vehicule/list" class="btn-cancel">Annuler</a>
             </div>
-            
         </form>
     </div>
 </section>

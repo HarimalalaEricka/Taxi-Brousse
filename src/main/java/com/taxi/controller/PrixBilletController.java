@@ -126,4 +126,51 @@ public class PrixBilletController {
             return "redirect:/api/PrixBillet/list";
         }
     }
+
+    @GetMapping("/delete/{id}")
+    public String deletePrixBillet(@PathVariable Long id) {
+        prixBilletService.delete(id);
+        return "redirect:/api/PrixBillet/list";
+    }
+
+    @GetMapping("/cloturer/{id}")
+    public String cloturerPrixBillet(@PathVariable Long id) {
+        prixBilletService.getById(id).ifPresent(prixBillet -> {
+            prixBillet.setDateFin(LocalDate.now());
+            prixBilletService.update(prixBillet);
+        });
+        return "redirect:/api/PrixBillet/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editPrixBillet(@PathVariable Long id, Model model) {
+        prixBilletService.getById(id).ifPresent(prixBillet -> {
+            model.addAttribute("prixBillet", prixBillet);
+        });
+        model.addAttribute("trajets", trajetService.getAll());
+        model.addAttribute("types", typePlaceService.getAll());
+        model.addAttribute("title", "Modifier Prix Billet");
+        model.addAttribute("content", "PrixBillet/edit");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "input.css");
+        return "layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updatePrixBilletForm(@PathVariable Long id,
+                                       @RequestParam BigDecimal prix,
+                                       @RequestParam LocalDate dateDebut,
+                                       @RequestParam(required = false) LocalDate dateFin,
+                                       @RequestParam Long trajetId,
+                                       @RequestParam Long typePlaceId) {
+        prixBilletService.getById(id).ifPresent(prixBillet -> {
+            prixBillet.setPrix(prix);
+            prixBillet.setDateDebut(dateDebut);
+            prixBillet.setDateFin(dateFin);
+            trajetService.getById(trajetId).ifPresent(prixBillet::setTrajet);
+            typePlaceService.getById(typePlaceId).ifPresent(prixBillet::setTypePlace);
+            prixBilletService.update(prixBillet);
+        });
+        return "redirect:/api/PrixBillet/list";
+    }
 }

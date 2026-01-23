@@ -1,0 +1,50 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Nouvelle Prestation</h2>
+    </div>
+    
+    <div class="main">
+        <form method="post" action="/prestation/create">
+            <div class="form-group">
+                <label for="societe">Société :</label>
+                <select id="societe" name="societe.idSociete" required>
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="s : ${societes}" th:value="${s.idSociete}" th:text="${s.nom}">Société</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tarifPrestation">Tarif (Type + Prix) :</label>
+                <select id="tarifPrestation" name="tarifPrestation.idTarifPrestation" required>
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="t : ${tarifPrestations}" th:value="${t.idTarifPrestation}" 
+                            th:text="${t.typePrestation.nom} + ' - ' + ${#numbers.formatDecimal(t.prixUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Tarif</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="voyage">Voyage (optionnel) :</label>
+                <select id="voyage" name="voyage.idVoyage">
+                    <option value="">-- Aucun voyage --</option>
+                    <option th:each="v : ${voyages}" th:value="${v.idVoyage}" 
+                            th:text="${v.trajet != null ? (v.trajet.villeDepart + ' → ' + v.trajet.villeArrivee) : 'Sans trajet'} + ' - ' + ${v.dateDepart}">Voyage</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="quantite">Quantité :</label>
+                <input type="number" id="quantite" name="quantite" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="datePrestation">Date :</label>
+                <input type="date" id="datePrestation" name="datePrestation" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Enregistrer</button>
+                <a href="/prestation" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>

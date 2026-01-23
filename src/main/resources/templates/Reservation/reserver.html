@@ -11,8 +11,8 @@
         
         <!-- Informations de base -->
         <div>
-            <label for="voyageId">Voyage :</label>
-            <select id="voyageId" name="voyageId" required>
+            <label for="voyage">Voyage :</label>
+            <select id="voyage" name="voyage" required>
                 <option value="">Choisir un voyage</option>
                 <option th:each="voyage : ${voyages}" 
                         th:value="${voyage.idVoyage}"
@@ -22,8 +22,8 @@
         </div>
         
         <div>
-            <label for="utilisateurId">Utilisateur :</label>
-            <select id="utilisateurId" name="utilisateurId" required>
+            <label for="utilisateur">Utilisateur :</label>
+            <select id="utilisateur" name="utilisateur" required>
                 <option value="">Choisir un utilisateur</option>
                 <option th:each="utilisateur : ${utilisateurs}" 
                         th:value="${utilisateur.idUtilisateur}"

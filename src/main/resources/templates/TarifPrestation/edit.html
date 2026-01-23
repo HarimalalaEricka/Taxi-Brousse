@@ -1,0 +1,40 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Modifier Tarif</h2>
+    </div>
+    
+    <div class="main">
+        <form method="post" th:action="@{'/tarif-prestation/edit/' + ${tarifPrestation.idTarifPrestation}}">
+            <div class="form-group">
+                <label for="typePrestation">Type de Prestation :</label>
+                <select id="typePrestation" name="typePrestation.idTypePrestation" required>
+                    <option value="">-- Sélectionner --</option>
+                    <option th:each="type : ${typePrestations}" 
+                            th:value="${type.idTypePrestation}" 
+                            th:text="${type.nom}"
+                            th:selected="${tarifPrestation.typePrestation != null and tarifPrestation.typePrestation.idTypePrestation == type.idTypePrestation}">Type</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="prixUnitaire">Prix Unitaire (Ar) :</label>
+                <input type="number" id="prixUnitaire" name="prixUnitaire" th:value="${tarifPrestation.prixUnitaire}" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dateDebut">Date Début :</label>
+                <input type="date" id="dateDebut" name="dateDebut" th:value="${tarifPrestation.dateDebut}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateFin">Date Fin (optionnel) :</label>
+                <input type="date" id="dateFin" name="dateFin" th:value="${tarifPrestation.dateFin}">
+            </div>
+            
+            <div class="form-actions">
+                <a href="/tarif-prestation" class="btn-cancel">Annuler</a>
+                <button type="submit" class="btn-submit">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</section>

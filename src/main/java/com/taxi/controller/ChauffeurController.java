@@ -60,7 +60,7 @@ public class ChauffeurController {
         model.addAttribute("title", "Chauffeur");
         model.addAttribute("content", "Chauffeur/create_chauffeur");
         model.addAttribute("fragment", "content");
-        model.addAttribute("pageCss", " input.css");
+        model.addAttribute("pageCss", "input.css");
         return "layout";
     }
     @PostMapping("/createChauffeur")
@@ -75,6 +75,56 @@ public class ChauffeurController {
         chauffeur.setStatus(StatutUtilisateur.ACTIF);
 
         ChauffeurService.create(chauffeur);
+        return "redirect:/api/Chauffeur/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteChauffeur(@PathVariable Long id) {
+        ChauffeurService.delete(id);
+        return "redirect:/api/Chauffeur/list";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editChauffeurForm(@PathVariable Long id, Model model) {
+        ChauffeurService.getById(id).ifPresent(chauffeur -> {
+            model.addAttribute("chauffeur", chauffeur);
+        });
+        model.addAttribute("title", "Modifier Chauffeur");
+        model.addAttribute("content", "Chauffeur/edit");
+        model.addAttribute("fragment", "content");
+        model.addAttribute("pageCss", "input.css");
+        return "layout";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateChauffeur(@PathVariable Long id,
+                                  @RequestParam String nom,
+                                  @RequestParam String prenom,
+                                  @RequestParam String telephone) {
+        ChauffeurService.getById(id).ifPresent(chauffeur -> {
+            chauffeur.setNom(nom);
+            chauffeur.setPrenom(prenom);
+            chauffeur.setTelephone(telephone);
+            ChauffeurService.update(chauffeur);
+        });
+        return "redirect:/api/Chauffeur/list";
+    }
+
+    @GetMapping("/desactiver/{id}")
+    public String desactiverChauffeur(@PathVariable Long id) {
+        ChauffeurService.getById(id).ifPresent(chauffeur -> {
+            chauffeur.setStatus(StatutUtilisateur.INACTIF);
+            ChauffeurService.update(chauffeur);
+        });
+        return "redirect:/api/Chauffeur/list";
+    }
+
+    @GetMapping("/activer/{id}")
+    public String activerChauffeur(@PathVariable Long id) {
+        ChauffeurService.getById(id).ifPresent(chauffeur -> {
+            chauffeur.setStatus(StatutUtilisateur.ACTIF);
+            ChauffeurService.update(chauffeur);
+        });
         return "redirect:/api/Chauffeur/list";
     }
 }

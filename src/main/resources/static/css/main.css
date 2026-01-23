@@ -61,7 +61,11 @@ section p {
 .v2_6 a:hover .v8_65,
 .v2_6 a:hover .v8_82,
 .v2_6 a:hover .v8_91,
-.v2_6 a:hover .v8_101 {
+.v2_6 a:hover .v8_101,
+.v2_6 a:hover .v8_120,
+.v2_6 a:hover .v8_130,
+.v2_6 a:hover .v8_140,
+.v2_6 a:hover .v8_150 {
   background-color: rgba(130,129,115,1);
   cursor: pointer;
 }
@@ -103,13 +107,20 @@ section p {
   position: fixed;
   top: 0px;
   left: 0px;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   z-index: 50;
   
   /* Cache la barre de scroll */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE et Edge */
+}
+
+/* Conteneur interne pour permettre le scroll */
+.v2_6 .sidebar-content {
+  position: relative;
+  min-height: 1150px;
+  padding-bottom: 50px;
 }
 
 /* Cache la barre de scroll pour Chrome, Safari et Opera */
@@ -383,6 +394,169 @@ section p {
   text-align: left;
 }
 
+/* SECTION PRESTATIONS */
+/* .v8_110 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/ion_person-sharp.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 781px;
+  left: 12px;
+  overflow: hidden;
+} */
+
+.v8_111 {
+  width: 130px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_120 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/uil_bill.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 781px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_121 {
+  width: 93px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_130 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/uil_bill.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 850px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_131 {
+  width: 93px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_140 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/tdesign_money-filled.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 919px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_141 {
+  width: 93px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_150 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/uil_bill.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 988px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_151 {
+  width: 93px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
+.v8_160 {
+  width: 225px;
+  height: 54px;
+  background: url("../icons/tdesign_money-filled.svg");
+  background-repeat: no-repeat;
+  background-position: 40px 5px;
+  background-size: 35px 35px;
+  opacity: 1;
+  position: absolute;
+  top: 1057px;
+  left: 12px;
+  overflow: hidden;
+}
+
+.v8_161 {
+  width: 93px;
+  color: rgba(0,0,0,1);
+  position: absolute;
+  top: 18px;
+  left: 93px;
+  font-family: 'IM FELL French Canon', serif;
+  font-weight: normal;
+  font-size: 20px;
+  opacity: 1;
+  text-align: left;
+}
+
 .v4_8 {
   width: calc(100% - 328px);
   height: 3px;
@@ -430,3 +604,130 @@ section p {
   color: #fff;
 }
 
+/* ============================================
+   NOUVEAU SIDEBAR RESPONSIVE - FLEXBOX
+   Couleurs du thème:
+   - Primary: rgba(150,149,135,1) - Gris/Beige
+   - Accent: rgba(130,129,115,1) - Gris foncé
+   - Background: rgba(253,255,254,1) - Blanc cassé
+   ============================================ */
+
+.sidebar {
+  width: 271px;
+  height: 100vh;
+  background: linear-gradient(180deg, rgba(150,149,135,1) 0%, rgba(140,139,125,1) 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+  
+  /* Cache la barre de scroll */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Header du Sidebar avec Logo */
+.sidebar-header {
+  padding: 35px 20px;
+  text-align: center;
+  background: rgba(130,129,115,1);
+  position: sticky;
+  top: 0;
+  z-index: 55;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+
+.sidebar-logo {
+  font-family: 'Imperial Script', cursive;
+  font-size: 42px;
+  color: rgba(253,255,254,1);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Navigation Container */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 0;
+  flex: 1;
+}
+
+/* Groupe de navigation (module) */
+.nav-group {
+  margin-bottom: 10px;
+}
+
+/* Titre du groupe */
+.nav-group-title {
+  font-family: 'IM FELL French Canon', serif;
+  font-size: 11px;
+  color: rgba(253,255,254,0.6);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 15px 25px 8px 25px;
+  margin-top: 5px;
+  border-top: 1px solid rgba(253,255,254,0.1);
+}
+
+.nav-group:first-child .nav-group-title {
+  border-top: none;
+}
+
+/* Item de navigation */
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 25px;
+  text-decoration: none;
+  color: rgba(253,255,254,0.9);
+  font-family: 'IM FELL French Canon', serif;
+  font-size: 17px;
+  transition: all 0.25s ease;
+  gap: 15px;
+  border-left: 3px solid transparent;
+  margin: 2px 0;
+}
+
+.nav-item:hover {
+  background: rgba(130,129,115,1);
+  border-left: 3px solid rgba(253,255,254,0.8);
+  color: rgba(253,255,254,1);
+  padding-left: 30px;
+}
+
+.nav-item.active {
+  background: rgba(130,129,115,1);
+  border-left: 3px solid rgba(253,255,254,1);
+  color: rgba(253,255,254,1);
+}
+
+/* Icône de navigation */
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  opacity: 0.85;
+  filter: brightness(0) invert(1);
+  transition: all 0.25s ease;
+}
+
+.nav-item:hover .nav-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Pour ajouter facilement un nouvel item, utilisez simplement:
+   <a href="/nouveau-lien" class="nav-item">
+       <img src="/icons/mon-icon.svg" class="nav-icon" alt=""/>
+       <span>MON TEXTE</span>
+   </a>
+*/
