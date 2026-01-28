@@ -27,7 +27,7 @@
                 <select id="voyage" name="voyage.idVoyage">
                     <option value="">-- Aucun voyage --</option>
                     <option th:each="v : ${voyages}" th:value="${v.idVoyage}" 
-                            th:text="${v.trajet != null ? (v.trajet.villeDepart + ' → ' + v.trajet.villeArrivee) : 'Sans trajet'} + ' - ' + ${v.dateDepart}">Voyage</option>
+                            th:text="${v.trajet != null ? (v.trajet.villeDepart + ' → ' + v.trajet.villeArrivee) : 'Sans trajet'} + ' - ' + ${v.dateDepart} + ' - ' + ${v.heureDepart}">Voyage</option>
                 </select>
             </div>
             

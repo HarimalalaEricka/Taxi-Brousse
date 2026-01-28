@@ -1,0 +1,59 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h2>Factures Sociétés</h2>
+            </div>
+            
+            <a th:href="@{/facture-societe/create}" class="btn btn-primary">+ Nouvelle Facture</a>
+        </header>
+    </div>
+        
+        <main>
+            <div class="result-count">
+                <strong th:text="${factures.size()}">0</strong> facture(s) trouvée(s)
+            </div>
+            
+            <div>
+                <table border="1">
+                    <thead>
+                         <tr>
+                            <th>N° Facture</th>
+                            <th>Société</th>
+                            <th>Date</th>
+                            <th>Montant Total</th>
+                            <th>Montant Payé</th>
+                            <th>Reste à Payer</th>
+                            <th>% Payé</th>
+                            <th>État</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         <tr th:each="facture : ${factures}">
+                            <td th:text="${facture.numFacture}"></td>
+                            <td th:text="${facture.societe.nom}"></td>
+                            <td th:text="${facture.dateFacture}"></td>
+                            <td th:text="${#numbers.formatDecimal(facture.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                            <td th:text="${#numbers.formatDecimal(facture.montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                            <td th:text="${#numbers.formatDecimal(facture.resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                            <td>
+                                <span th:text="${#numbers.formatDecimal(facture.pourcentagePaye, 0, 'COMMA', 2, 'POINT')} + ' %'"></span>
+                            </td>
+                            <td>
+                                <span th:class="${facture.etatPaiement?.etat == 'paye' ? 'badge badge-success' : 
+                                                (facture.etatPaiement?.etat == 'partiel' ? 'badge badge-warning' : 'badge badge-danger')}"
+                                    th:text="${facture.etatPaiement?.etat}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/facture-societe/{id}(id=${facture.idFactureSociete})}" class="btn btn-sm btn-info">Détails</a>
+                                <a th:href="@{/facture-societe/payer/{id}(id=${facture.idFactureSociete})}" class="btn btn-sm btn-success"
+                                th:if="${facture.resteAPayer > 0}">Payer</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</section>

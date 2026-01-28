@@ -1,0 +1,28 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Nouvelle Facture Société</h2>
+    </div>
+    <div class="main">
+        <form th:action="@{/facture-societe/create}" method="post">
+            <div class="form-group">
+                <label for="idSociete">Société</label>
+                <select name="idSociete" id="idSociete" class="form-control" required>
+                    <option value="">-- Sélectionner une société --</option>
+                    <option th:each="societe : ${societes}" 
+                            th:value="${societe.idSociete}" 
+                            th:text="${societe.nom}"></option>
+                </select>
+            </div>
+            
+            <p class="text-muted mt-2">
+                Cette action créera une facture pour la société sélectionnée 
+                et y associera automatiquement toutes ses prestations non encore facturées.
+            </p>
+            
+            <div class="form-actions mt-3">
+                <button type="submit" class="btn btn-primary">Créer la Facture</button>
+                <a th:href="@{/facture-societe}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+</section>

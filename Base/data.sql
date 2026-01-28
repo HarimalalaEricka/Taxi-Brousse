@@ -51,7 +51,7 @@ INSERT INTO Categorie_personne(categorie, reduction_pourcentage, reduction_fixe,
 insert into prix_billet(prix, date_debut, date_fin, Id_trajet, Id_type_place) values
 (50000.00, '2026-01-01', null, 1, 1), 
 (60000.00, '2026-01-01', null, 1, 2),
-(70000.00, '2026-01-01', null, 1, 3),
+(70000.00, '2026-01-01', null, 1, 3);
  
 
 
@@ -74,8 +74,9 @@ INSERT INTO vehicule(immatriculation, nombre_places, Id_etat_vehicule) VALUES
 
 
 INSERT INTO voyage(date_depart, heure_depart, Id_trajet, Id_chauffeur, Id_vehicule, Id_etat_voyage) VALUES
-('2026-01-09', '08:00:00', 1, 1, 1, 1),
-('2026-01-09', '09:30:00', 2, 2, 2, 1);
+('2026-01-20', '10:00:00', 1, 1, 1, 1),
+('2026-01-21', '10:00:00', 1, 1, 1, 1),
+('2026-01-21', '15:00:00', 1, 1, 1, 1);
 
 Insert into place(numero_place, statut, Id_vehicule, Id_type_place) values
 ('1V1', 'LIBRE', 1, 1),

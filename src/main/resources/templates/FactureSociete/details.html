@@ -1,0 +1,92 @@
+<section th:fragment="content">
+    <div class="header">
+        <header>
+            <h2>Détails Facture <span th:text="${facture.numFacture}"></span></h2>
+
+        </header>
+    </div>
+    <main>
+    <!-- Informations générales -->
+    <div class="card mb-3">
+        <div class="card-header">Informations Générales</div>
+        <div class="card-body">
+            <p><strong>Société:</strong> <span th:text="${facture.societe.nom}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${facture.dateFacture}"></span></p>
+            <p><strong>Montant Total:</strong> <span th:text="${#numbers.formatDecimal(facture.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span></p>
+            <p><strong>Montant Payé:</strong> <span th:text="${#numbers.formatDecimal(facture.montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span></p>
+            <p><strong>Reste à Payer:</strong> <span th:text="${#numbers.formatDecimal(facture.resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span></p>
+            <p><strong>Pourcentage Payé:</strong> <span th:text="${#numbers.formatDecimal(facture.pourcentagePaye, 0, 'COMMA', 2, 'POINT')} + ' %'"></span></p>
+            <p><strong>État:</strong> 
+                <span th:class="${facture.etatPaiement?.etat == 'paye' ? 'badge badge-success' : 
+                                 (facture.etatPaiement?.etat == 'partiel' ? 'badge badge-warning' : 'badge badge-danger')}"
+                      th:text="${facture.etatPaiement?.etat}"></span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Prestations de la facture -->
+    <div class="card mb-3">
+        <div class="card-header">Prestations (Répartition proportionnelle du paiement)</div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Voyage</th>
+                        <th>Quantité</th>
+                        <th>Montant</th>
+                        <th>Payé (proportionnel)</th>
+                        <th>% Payé</th>
+                        <th>Reste</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="prestation : ${facture.prestations}">
+                        <td th:text="${prestation.datePrestation}"></td>
+                        <td th:text="${prestation.tarifPrestation?.typePrestation?.nom}"></td>
+                        <td th:text="${prestation.voyage?.trajet?.villeDepart + ' → ' + prestation.voyage?.trajet?.villeArrivee}"></td>
+                        <td th:text="${prestation.quantite}"></td>
+                        <td th:text="${#numbers.formatDecimal(prestation.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                        <td th:text="${#numbers.formatDecimal(prestation.montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                        <td th:text="${#numbers.formatDecimal(prestation.pourcentagePaye, 0, 'COMMA', 2, 'POINT')} + ' %'"></td>
+                        <td th:text="${#numbers.formatDecimal(prestation.resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Historique des paiements -->
+    <div class="card mb-3">
+        <div class="card-header">Historique des Paiements</div>
+        <div class="card-body">
+            <table class="table" th:if="${not #lists.isEmpty(paiements)}">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Montant</th>
+                        <th>Mode</th>
+                        <th>Référence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="paiement : ${paiements}">
+                        <td th:text="${paiement.datePaiement}"></td>
+                        <td th:text="${#numbers.formatDecimal(paiement.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                        <td th:text="${paiement.modePaiement ?: '-'}"></td>
+                        <td th:text="${paiement.reference ?: '-'}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${#lists.isEmpty(paiements)}" class="text-muted">Aucun paiement effectué.</p>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/facture-societe/payer/{id}(id=${facture.idFactureSociete})}" 
+           class="btn btn-success" th:if="${facture.resteAPayer > 0}">Effectuer un Paiement</a>
+        <a th:href="@{/facture-societe}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+</main>
+</section>

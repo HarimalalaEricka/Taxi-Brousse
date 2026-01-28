@@ -20,7 +20,7 @@ public class PrestationService {
     }
 
     public List<Prestation> getAll() {
-        return prestationRepository.findAll();
+        return prestationRepository.findAllWithRelations();
     }
 
     public Optional<Prestation> getById(Long id) {

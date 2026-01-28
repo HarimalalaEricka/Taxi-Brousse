@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.stream.Collectors;
+import java.math.BigDecimal;
 
 @Service
 public class VoyageService {
@@ -24,6 +25,8 @@ public class VoyageService {
     private VoyageRepository VoyageRepository;
     @Autowired
     private PlaceRepository placeRepository;
+    @Autowired
+    private PlaceVoyageRepository placeVoyageRepository;
     @Autowired
     private ReservationRepository reservationRepository;
     @Autowired
@@ -34,9 +37,35 @@ public class VoyageService {
     private PrixBilletRepository prixBilletRepository;
     @Autowired 
     private PrixBilletService prixBilletService;
+    @Autowired
+    private PaiementFactureSocieteService paiementFactureSocieteService;
 
-    public Voyage create(Voyage Voyage) {
-        return VoyageRepository.save(Voyage);
+    public Voyage create(Voyage voyage) {
+        // Sauvegarder le voyage d'abord
+        Voyage savedVoyage = VoyageRepository.save(voyage);
+        
+        // Initialiser les PlaceVoyage pour ce voyage
+        if (savedVoyage.getVehicule() != null) {
+            initializePlacesForVoyage(savedVoyage);
+        }
+        
+        return savedVoyage;
+    }
+
+    /**
+     * Initialise les PlaceVoyage pour un nouveau voyage
+     * Copie toutes les places du véhicule et les met en statut LIBRE
+     */
+    private void initializePlacesForVoyage(Voyage voyage) {
+        List<Place> placesVehicule = placeRepository.findByVehicule(voyage.getVehicule());
+        
+        for (Place place : placesVehicule) {
+            PlaceVoyage pv = new PlaceVoyage();
+            pv.setPlace(place);
+            pv.setVoyage(voyage);
+            pv.setStatut(StatusPlace.LIBRE);
+            placeVoyageRepository.save(pv);
+        }
     }
 
     public List<Voyage> getAll() {
@@ -154,6 +183,45 @@ public class VoyageService {
         return total;
     }
 
+    /**
+     * Calcule le montant total des prestations payées pour un voyage
+     */
+    public double calculPrestationsPayees(Voyage voyage) {
+        double totalPaye = 0.0;
+        if (voyage.getPrestations() != null) {
+            for (Prestation p : voyage.getPrestations()) {
+                if (p.getFactureSociete() != null) {
+                    // Utiliser le nouveau système de paiement par facture société
+                    BigDecimal montantPaye = paiementFactureSocieteService.getMontantPayePourPrestation(p);
+                    totalPaye += montantPaye.doubleValue();
+                }
+            }
+        }
+        return totalPaye;
+    }
+
+    /**
+     * Calcule le reste à payer pour les prestations d'un voyage
+     */
+    public double calculPrestationsResteAPayer(Voyage voyage) {
+        double totalReste = 0.0;
+        if (voyage.getPrestations() != null) {
+            for (Prestation p : voyage.getPrestations()) {
+                if (p.getFactureSociete() != null) {
+                    // Utiliser le nouveau système de paiement par facture société
+                    BigDecimal montantPaye = paiementFactureSocieteService.getMontantPayePourPrestation(p);
+                    BigDecimal montantTotal = p.getMontantTotal();
+                    BigDecimal reste = montantTotal.subtract(montantPaye);
+                    totalReste += reste.doubleValue();
+                } else {
+                    // Prestation non facturée = reste à payer = montant total
+                    totalReste += p.getMontantTotal().doubleValue();
+                }
+            }
+        }
+        return totalReste;
+    }
+
     public List<VoyageValeur> getVoyagesWithValeurMax( List<Voyage> voyages)
     {
         List<VoyageValeur> result = new ArrayList<>();
@@ -162,7 +230,9 @@ public class VoyageService {
             double valeurMax = calculValeurMax(v);
             double chiffreAffaire = calculChiffreAffaire(v);
             double caPrestation = calculCAPrestations(v);
-            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire, caPrestation) );
+            double prestationsPayees = calculPrestationsPayees(v);
+            double prestationsResteAPayer = calculPrestationsResteAPayer(v);
+            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire, caPrestation, prestationsPayees, prestationsResteAPayer) );
         }
         return result;
     }

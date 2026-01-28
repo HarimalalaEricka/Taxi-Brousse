@@ -18,9 +18,9 @@ public class Billet {
     @JoinColumn(name = "id_reservation", nullable = false)  // SUPPRIMÉ: unique = true
     private Reservation reservation;
 
-    @OneToOne
-    @JoinColumn(name = "id_place", nullable = false)
-    private Place place;
+    @ManyToOne
+    @JoinColumn(name = "id_place_voyage", nullable = false)
+    private PlaceVoyage placeVoyage;
 
     public Long getIdBillet() {
         return idBillet;
@@ -46,12 +46,17 @@ public class Billet {
         this.reservation = reservation;
     }
 
-    public Place getPlace() {
-        return place;
+    public PlaceVoyage getPlaceVoyage() {
+        return placeVoyage;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setPlaceVoyage(PlaceVoyage placeVoyage) {
+        this.placeVoyage = placeVoyage;
+    }
+
+    // Méthode de compatibilité pour accéder à la Place via PlaceVoyage
+    public Place getPlace() {
+        return placeVoyage != null ? placeVoyage.getPlace() : null;
     }
     
     public void genererNumeroBillet() {

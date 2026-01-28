@@ -1,0 +1,107 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Paiement Facture <span th:text="${facture.numFacture}"></span></h2>
+    </div>
+    
+    <!-- Résumé de la facture -->
+    <div class="card mb-3">
+        <div class="card-header">Résumé</div>
+        <div class="card-body">
+            <p><strong>Société:</strong> <span th:text="${facture.societe.nom}"></span></p>
+            <p><strong>Montant Total:</strong> <span th:text="${#numbers.formatDecimal(facture.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span></p>
+            <p><strong>Déjà Payé:</strong> <span th:text="${#numbers.formatDecimal(facture.montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span></p>
+            <p><strong>Reste à Payer:</strong> <span class="text-danger" th:text="${#numbers.formatDecimal(resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span></p>
+        </div>
+    </div>
+
+    <!-- Prestations concernées -->
+    <div class="card mb-3">
+        <div class="card-header">Prestations concernées (le paiement sera réparti proportionnellement)</div>
+        <div class="card-body">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Montant</th>
+                        <th>Proportion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="prestation : ${facture.prestations}">
+                        <td th:text="${prestation.tarifPrestation?.typePrestation?.nom}"></td>
+                        <td th:text="${#numbers.formatDecimal(prestation.montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                        <td>
+                            <span th:if="${facture.montantTotal > 0}"
+                                  th:text="${#numbers.formatDecimal(prestation.montantTotal * 100 / facture.montantTotal, 0, 'COMMA', 2, 'POINT')} + ' %'"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-info">
+                <i class="fas fa-info-circle"></i> 
+                Le montant payé sera réparti sur chaque prestation selon sa proportion dans le total.
+            </p>
+        </div>
+    </div>
+
+    <!-- Formulaire de paiement -->
+    <div class="card mb-3">
+        <div class="card-header">Effectuer un Paiement</div>
+        <div class="card-body">
+            <form th:action="@{/facture-societe/payer/{id}(id=${facture.idFactureSociete})}" method="post">
+                <div class="form-group">
+                    <label for="montant">Montant à payer (Ar)</label>
+                    <input type="number" name="montant" id="montant" class="form-control" 
+                           step="0.01" min="0" th:max="${resteAPayer}" required
+                           th:value="${resteAPayer}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="datePaiement">Date du paiement</label>
+                    <input type="date" name="datePaiement" id="datePaiement" class="form-control" 
+                           th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modePaiement">Mode de paiement</label>
+                    <select name="modePaiement" id="modePaiement" class="form-control">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="ESPECE">Espèces</option>
+                        <option value="MOBILE_MONEY">Mobile Money</option>
+                        <option value="VIREMENT">Virement</option>
+                        <option value="CHEQUE">Chèque</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions mt-3">
+                    <button type="submit" class="btn btn-success">Valider le Paiement</button>
+                    <a th:href="@{/facture-societe/{id}(id=${facture.idFactureSociete})}" class="btn btn-secondary">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Historique des paiements -->
+    <div class="card" th:if="${not #lists.isEmpty(paiements)}">
+        <div class="card-header">Paiements précédents</div>
+        <div class="card-body">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Montant</th>
+                        <th>Mode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="paiement : ${paiements}">
+                        <td th:text="${paiement.datePaiement}"></td>
+                        <td th:text="${#numbers.formatDecimal(paiement.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                        <td th:text="${paiement.modePaiement ?: '-'}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</section>

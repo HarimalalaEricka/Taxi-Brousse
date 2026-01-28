@@ -32,6 +32,10 @@ public class Prestation {
     @JoinColumn(name = "id_voyage")
     private Voyage voyage;
 
+    @ManyToOne
+    @JoinColumn(name = "id_facture_societe")
+    private FactureSociete factureSociete;
+
     public Long getIdPrestation() {
         return idPrestation;
     }
@@ -88,11 +92,58 @@ public class Prestation {
         this.voyage = voyage;
     }
 
+    public FactureSociete getFactureSociete() {
+        return factureSociete;
+    }
+
+    public void setFactureSociete(FactureSociete factureSociete) {
+        this.factureSociete = factureSociete;
+    }
+
     // Calcule le montant total de la prestation
     public BigDecimal getMontantTotal() {
         if (tarifPrestation == null || quantite == null) {
             return BigDecimal.ZERO;
         }
         return tarifPrestation.getPrixUnitaire().multiply(BigDecimal.valueOf(quantite));
+    }
+
+    /**
+     * Calcule le montant payé pour cette prestation basé sur les paiements de la facture société
+     * Le montant est calculé proportionnellement: (paiement_total / total_facture) * montant_prestation
+     */
+    public BigDecimal getMontantPaye() {
+        if (factureSociete == null || factureSociete.getPaiements() == null) {
+            return BigDecimal.ZERO;
+        }
+        
+        BigDecimal totalFacture = factureSociete.getMontantTotal();
+        if (totalFacture.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        
+        BigDecimal totalPaiements = factureSociete.getMontantPaye();
+        BigDecimal montantPrestation = getMontantTotal();
+        
+        // Montant payé = (total_paiements / total_facture) * montant_prestation
+        return totalPaiements.multiply(montantPrestation)
+                .divide(totalFacture, 2, java.math.RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Calcule le pourcentage payé pour cette prestation
+     */
+    public BigDecimal getPourcentagePaye() {
+        if (factureSociete == null) {
+            return BigDecimal.ZERO;
+        }
+        return factureSociete.getPourcentagePaye();
+    }
+
+    /**
+     * Calcule le reste à payer pour cette prestation
+     */
+    public BigDecimal getResteAPayer() {
+        return getMontantTotal().subtract(getMontantPaye());
     }
 }

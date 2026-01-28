@@ -9,6 +9,7 @@
             <h3 th:text="${prestation.societe.nom}">Société</h3>
             <p><strong>Type :</strong> <span th:text="${prestation.tarifPrestation.typePrestation.nom}">Type</span></p>
             <p><strong>Date :</strong> <span th:text="${prestation.datePrestation}">Date</span></p>
+            <p><strong>Voyage :</strong> <span th:text="${prestation.voyage != null ? prestation.voyage.trajet.villeDepart + ' → ' + prestation.voyage.trajet.villeArrivee : '-'}">Voyage</span></p>
             <p><strong>Quantité :</strong> <span th:text="${prestation.quantite}">Quantité</span></p>
             <p><strong>Prix Unitaire :</strong> <span th:text="${#numbers.formatDecimal(prestation.tarifPrestation.prixUnitaire, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Prix</span></p>
             <hr>
@@ -21,50 +22,58 @@
             <p class="montant-reste"><strong>Reste à Payer :</strong> 
                 <span th:text="${#numbers.formatDecimal(resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Reste</span>
             </p>
+            <p th:if="${prestation.factureSociete != null}">
+                <strong>Pourcentage Payé :</strong> 
+                <span th:text="${#numbers.formatDecimal(prestation.factureSociete.pourcentagePaye, 0, 'COMMA', 2, 'POINT')} + ' %'">0%</span>
+            </p>
         </div>
 
-        <!-- Historique des paiements -->
-        <div th:if="${not #lists.isEmpty(paiements)}" class="historique-card">
-            <h4>Historique des paiements</h4>
+        <!-- Message pour paiement par facture société -->
+        <div th:if="${prestation.factureSociete != null}" style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #1976D2; margin-bottom: 10px;">💡 Nouveau système de paiement</h4>
+            <p>Les paiements sont maintenant effectués <strong>par facture société</strong>.</p>
+            <p>Le montant payé est réparti proportionnellement sur toutes les prestations de la société.</p>
+            <p style="margin-top: 15px;">
+                <a th:href="@{'/facture-societe/payer/' + ${prestation.factureSociete.idFactureSociete}}" 
+                   style="background: #1976D2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                    Payer la Facture Société
+                </a>
+            </p>
+        </div>
+
+        <!-- Message si pas de facture société -->
+        <div th:if="${prestation.factureSociete == null}" style="background: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #f57c00; margin-bottom: 10px;">⚠️ Prestation non facturée</h4>
+            <p>Cette prestation n'est pas encore associée à une facture société.</p>
+            <p>Veuillez d'abord créer une facture pour la société <strong th:text="${prestation.societe.nom}"></strong>.</p>
+            <p style="margin-top: 15px;">
+                <a href="/facture-societe/create" 
+                   style="background: #f57c00; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                    Créer une Facture Société
+                </a>
+            </p>
+        </div>
+
+        <!-- Historique des paiements de la facture -->
+        <div th:if="${prestation.factureSociete != null and not #lists.isEmpty(prestation.factureSociete.paiements)}" class="historique-card">
+            <h4>Historique des paiements (Facture Société)</h4>
             <table>
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Montant</th>
+                        <th>Montant Total</th>
+                        <th>Part pour cette prestation</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="p : ${paiements}">
+                    <tr th:each="p : ${prestation.factureSociete.paiements}">
                         <td th:text="${p.datePaiement}">Date</td>
                         <td th:text="${#numbers.formatDecimal(p.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Montant</td>
+                        <td th:text="${#numbers.formatDecimal(p.getMontantPourPrestation(prestation), 0, 'COMMA', 0, 'POINT')} + ' Ar'">Part</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
-        <!-- Formulaire de paiement -->
-        <form th:if="${resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) > 0}" 
-              th:action="@{'/prestation/payer/' + ${prestation.idPrestation}}" method="post">
-            <div class="form-group">
-                <label for="montant">Montant à payer (Ar) :</label>
-                <input type="number" id="montant" name="montant" min="1" 
-                       th:max="${resteAPayer}" 
-                       th:value="${resteAPayer}"
-                       required>
-            </div>
-            
-            <div class="form-group">
-                <label for="datePaiement">Date du paiement :</label>
-                <input type="date" id="datePaiement" name="datePaiement" 
-                       th:value="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy-MM-dd')}"
-                       required>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit">Enregistrer le paiement</button>
-                <a href="/prestation" class="btn-cancel">Annuler</a>
-            </div>
-        </form>
 
         <!-- Message si entièrement payé -->
         <div th:if="${resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) == 0}" class="success-message">

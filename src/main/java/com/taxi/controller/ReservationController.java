@@ -30,6 +30,8 @@ public class ReservationController {
     @Autowired
     private PlaceService placeService;
     @Autowired
+    private PlaceVoyageService placeVoyageService;
+    @Autowired
     private BilletService billetService;
     @Autowired
     private FactureService factureService;
@@ -326,22 +328,22 @@ public class ReservationController {
                              ", Immatriculation=" + vehicule.getImmatriculation() + 
                              ", Places totales=" + vehicule.getNombrePlaces());
             
-            // 4. Vérification des places disponibles
-            System.out.println("Recherche places disponibles pour véhicule ID: " + vehicule.getIdVehicule());
-            List<Place> placesDisponibles = placeService.getPlacesDispo(vehicule.getIdVehicule());
-            System.out.println("Places disponibles: " + placesDisponibles.size());
+            // 4. Vérification des places disponibles pour CE voyage spécifique
+            System.out.println("Recherche places disponibles pour voyage ID: " + voyageId);
+            List<PlaceVoyage> placesDisponibles = placeVoyageService.getPlacesDispoForVoyage(voyageId);
+            System.out.println("Places disponibles pour ce voyage: " + placesDisponibles.size());
             
             // Afficher les places disponibles
-            for (Place place : placesDisponibles) {
-                System.out.println("  Place ID=" + place.getIdPlace() + 
-                                 ", Numéro=" + place.getNumeroPlace() + 
-                                 ", Type=" + (place.getTypePlace() != null ? place.getTypePlace().getType() : "null"));
+            for (PlaceVoyage pv : placesDisponibles) {
+                System.out.println("  PlaceVoyage ID=" + pv.getIdPlaceVoyage() + 
+                                 ", Place Numéro=" + pv.getPlace().getNumeroPlace() + 
+                                 ", Type=" + (pv.getPlace().getTypePlace() != null ? pv.getPlace().getTypePlace().getType() : "null"));
             }
             
             if (placesDisponibles.size() < nbPlace) {
                 System.out.println("ERREUR: Places insuffisantes. Disponibles: " + placesDisponibles.size() + ", Demandées: " + nbPlace);
                 redirectAttributes.addFlashAttribute("error", 
-                    "Pas assez de places disponibles. Il reste seulement " + 
+                    "Pas assez de places disponibles pour ce voyage. Il reste seulement " + 
                     placesDisponibles.size() + " place(s).");
                 return "redirect:/api/Reservation/reserver";
             }
@@ -410,15 +412,15 @@ public class ReservationController {
                 }
             }
             
-            // 8. Création des billets et mise à jour des places
+            // 8. Création des billets et mise à jour des PlaceVoyage
             System.out.println("Création des billets (" + nbPlace + " billets à créer)...");
             
-            // Grouper les places disponibles par type
-            Map<Long, List<Place>> placesParType = placesDisponibles.stream()
-                .collect(Collectors.groupingBy(p -> p.getTypePlace().getIdTypePlace()));
+            // Grouper les PlaceVoyage disponibles par type de place
+            Map<Long, List<PlaceVoyage>> placesParType = placesDisponibles.stream()
+                .collect(Collectors.groupingBy(pv -> pv.getPlace().getTypePlace().getIdTypePlace()));
             
             System.out.println("Places groupées par type:");
-            for (Map.Entry<Long, List<Place>> entry : placesParType.entrySet()) {
+            for (Map.Entry<Long, List<PlaceVoyage>> entry : placesParType.entrySet()) {
                 System.out.println("  Type ID " + entry.getKey() + ": " + entry.getValue().size() + " places");
             }
             
@@ -439,34 +441,34 @@ public class ReservationController {
                     Long typePlaceId = cp.getTypePlace().getIdTypePlace();
                     System.out.println("  Type de place requis: ID=" + typePlaceId);
                     
-                    List<Place> placesDeCeType = placesParType.getOrDefault(typePlaceId, new ArrayList<>());
+                    List<PlaceVoyage> placesDeCeType = placesParType.getOrDefault(typePlaceId, new ArrayList<>());
                     System.out.println("  Places disponibles de ce type: " + placesDeCeType.size());
                     
                     int placesAAttribuer = Math.min(nbrPlace, placesDeCeType.size());
                     System.out.println("  Places à attribuer: " + placesAAttribuer);
                     
                     for (int i = 0; i < placesAAttribuer; i++) {
-                        Place place = placesDeCeType.get(i);
-                        System.out.println("    Attribution place ID: " + place.getIdPlace() + 
-                                         ", Numéro: " + place.getNumeroPlace());
+                        PlaceVoyage placeVoyage = placesDeCeType.get(i);
+                        System.out.println("    Attribution PlaceVoyage ID: " + placeVoyage.getIdPlaceVoyage() + 
+                                         ", Numéro: " + placeVoyage.getPlace().getNumeroPlace());
                         
-                        // Créer le billet
+                        // Créer le billet avec PlaceVoyage
                         Billet billet = new Billet();
                         billet.genererNumeroBillet();
                         billet.setReservation(reservation);
-                        billet.setPlace(place);
+                        billet.setPlaceVoyage(placeVoyage);
                         
                         System.out.println("    Appel billetService.create()");
                         billet = billetService.create(billet);
                         System.out.println("    Billet créé avec ID: " + billet.getIdBillet() + 
                                          ", Numéro: " + billet.getNumeroBillet());
                         
-                        // Mettre à jour le statut de la place
-                        System.out.println("    Mise à jour statut place ID: " + place.getIdPlace() + " -> RESERVEE");
-                        place.setStatut(StatusPlace.RESERVEE);
+                        // Mettre à jour le statut de la PlaceVoyage (pas la Place physique)
+                        System.out.println("    Mise à jour statut PlaceVoyage ID: " + placeVoyage.getIdPlaceVoyage() + " -> RESERVEE");
+                        placeVoyage.setStatut(StatusPlace.RESERVEE);
                         
-                        System.out.println("    Appel placeService.update()");
-                        placeService.update(place);
+                        System.out.println("    Appel placeVoyageService.update()");
+                        placeVoyageService.update(placeVoyage);
                         
                         billetsCrees++;
                         System.out.println("    Billets créés total: " + billetsCrees);

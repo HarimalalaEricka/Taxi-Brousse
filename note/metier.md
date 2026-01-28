@@ -9,7 +9,7 @@ Contexte :
 - Je veux uniquement ce qui est nécessaire à la logique métier
 - Réponse courte, précise, structurée
 
-Pour la fonctionnalité suivante : « Calcul CA d'une societe de gestion de cinema » 
+Pour la fonctionnalité suivante : « [les fonctionnalite qu'on a implemente tout a l'heure] » 
 
 Fournis exactement ces éléments :
 

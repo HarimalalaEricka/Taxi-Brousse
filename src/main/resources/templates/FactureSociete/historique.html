@@ -1,0 +1,53 @@
+<section th:fragment="content">
+    <div>
+        <header>
+            <div>
+                <h1>Historique des Paiements (Factures Sociétés)</h1>
+            </div>
+            <a href="/api/Reservation/reserver">
+                Nouvelle Facture
+            </a>
+        </header>
+    </div>
+<main>
+    <div class="header-actions">
+        <a th:href="@{/facture-societe}" class="btn btn-secondary">Retour aux Factures</a>
+    </div>
+
+    <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+        <h3>Total des Paiements</h3>
+        <p style="font-size: 28px; font-weight: bold; color: #2e7d32;" 
+           th:text="${#numbers.formatDecimal(totalPaiements, 0, 'COMMA', 0, 'POINT')} + ' Ar'">0 Ar</p>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Société</th>
+                <th>N° Facture</th>
+                <th>Montant</th>
+                <th>Mode</th>
+                <th>Référence</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${#lists.isEmpty(paiements)}">
+                <td colspan="6" style="text-align: center;">Aucun paiement enregistré</td>
+            </tr>
+            <tr th:each="paiement : ${paiements}">
+                <td th:text="${paiement.datePaiement}"></td>
+                <td th:text="${paiement.factureSociete.societe.nom}"></td>
+                <td>
+                    <a th:href="@{/facture-societe/{id}(id=${paiement.factureSociete.idFactureSociete})}"
+                       th:text="${paiement.factureSociete.numFacture}"></a>
+                </td>
+                <td style="font-weight: bold; color: #2e7d32;" 
+                    th:text="${#numbers.formatDecimal(paiement.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                <td th:text="${paiement.modePaiement ?: '-'}"></td>
+                <td th:text="${paiement.reference ?: '-'}"></td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+</section>

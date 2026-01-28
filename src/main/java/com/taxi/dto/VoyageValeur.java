@@ -8,13 +8,17 @@ public class VoyageValeur
     private Double valeurMax;
     private Double chiffreAffaire;
     private Double caPrestation;
+    private Double prestationsPayees;
+    private Double prestationsResteAPayer;
 
-    public VoyageValeur(Voyage voyage, Double valeurMax, Double chiffreAffaire, Double caPrestation)
+    public VoyageValeur(Voyage voyage, Double valeurMax, Double chiffreAffaire, Double caPrestation, Double prestationsPayees, Double prestationsResteAPayer)
     {
         this.voyage = voyage;
         this.valeurMax = valeurMax;
         this.chiffreAffaire = chiffreAffaire;
         this.caPrestation = caPrestation;
+        this.prestationsPayees = prestationsPayees;
+        this.prestationsResteAPayer = prestationsResteAPayer;
     }
     public Voyage getVoyage() {
         return voyage;
@@ -41,5 +45,17 @@ public class VoyageValeur
     }
     public void setCaPrestation(Double caPrestation) {
         this.caPrestation = caPrestation;
+    }
+    public Double getPrestationsPayees() {
+        return prestationsPayees;
+    }
+    public void setPrestationsPayees(Double prestationsPayees) {
+        this.prestationsPayees = prestationsPayees;
+    }
+    public Double getPrestationsResteAPayer() {
+        return prestationsResteAPayer;
+    }
+    public void setPrestationsResteAPayer(Double prestationsResteAPayer) {
+        this.prestationsResteAPayer = prestationsResteAPayer;
     }
 }

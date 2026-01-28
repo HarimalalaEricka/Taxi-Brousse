@@ -16,7 +16,7 @@
                 <option value="">Choisir un voyage</option>
                 <option th:each="voyage : ${voyages}" 
                         th:value="${voyage.idVoyage}"
-                        th:text="${voyage.trajet.villeDepart} + ' → ' + ${voyage.trajet.villeArrivee}">
+                        th:text="${voyage.trajet.villeDepart} + ' → ' + ${voyage.trajet.villeArrivee} + ' - ' + ${voyage.heureDepart} + ' - ' + ${voyage.dateDepart}">
                 </option>
             </select>
         </div>
@@ -60,7 +60,7 @@
                             <input type="number" 
                                 th:name="|nbrPlaces[${cp.idCategoriePersonne}]|"
                                 min="0" 
-                                max="10" 
+                                max="100" 
                                 value="0">
                         </div>
                     </td>

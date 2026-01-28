@@ -1,13 +1,12 @@
 package com.taxi.controller;
 
 import com.taxi.models.Prestation;
-import com.taxi.models.PaiementPrestation;
 import com.taxi.dto.PrestationAvecResteDTO;
 import com.taxi.service.PrestationService;
 import com.taxi.service.SocieteService;
 import com.taxi.service.TarifPrestationService;
 import com.taxi.service.VoyageService;
-import com.taxi.service.PaiementPrestationService;
+import com.taxi.service.PaiementFactureSocieteService;
 import com.taxi.repository.EtatPaiementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,7 +38,7 @@ public class PrestationController {
     private VoyageService voyageService;
 
     @Autowired
-    private PaiementPrestationService paiementPrestationService;
+    private PaiementFactureSocieteService paiementFactureSocieteService;
 
     @GetMapping
     public String list(@RequestParam(required = false) Integer mois,
@@ -56,12 +55,25 @@ public class PrestationController {
             prestations = prestationService.getAll();
         }
 
-        // Toujours créer des DTOs pour avoir le montant payé correct depuis la table paiement_prestation
+        // Créer des DTOs avec le montant payé calculé depuis la facture société (répartition proportionnelle)
         List<PrestationAvecResteDTO> prestationsDTO = new ArrayList<>();
         LocalDate dateRef = dateFiltre != null ? dateFiltre : LocalDate.now();
         
         for (Prestation p : prestations) {
-            BigDecimal montantPaye = paiementPrestationService.getMontantPayeADate(p, dateRef);
+            // Vérifier que la prestation a toutes les relations nécessaires
+            if (p.getSociete() == null || p.getTarifPrestation() == null || p.getTarifPrestation().getTypePrestation() == null) {
+                System.out.println("Prestation " + p.getIdPrestation() + " a des relations manquantes - ignorée");
+                continue; // Ignorer les prestations avec des relations manquantes
+            }
+            
+            // Utiliser le nouveau système: paiement via facture société avec répartition proportionnelle
+            BigDecimal montantPaye;
+            if (p.getFactureSociete() != null) {
+                montantPaye = paiementFactureSocieteService.getMontantPayePourPrestationADate(p, dateRef);
+            } else {
+                // Pas de facture société = pas encore payé
+                montantPaye = BigDecimal.ZERO;
+            }
             prestationsDTO.add(new PrestationAvecResteDTO(p, montantPaye));
         }
         
@@ -146,12 +158,18 @@ public class PrestationController {
     @GetMapping("/payer/{id}")
     public String payerForm(@PathVariable Long id, Model model) {
         prestationService.getById(id).ifPresent(prestation -> {
-            BigDecimal montantPaye = paiementPrestationService.getMontantPaye(prestation);
+            BigDecimal montantPaye;
+            // Utiliser le nouveau système de paiement par facture société
+            if (prestation.getFactureSociete() != null) {
+                montantPaye = paiementFactureSocieteService.getMontantPayePourPrestation(prestation);
+            } else {
+                // Pas de facture société = pas encore payé
+                montantPaye = BigDecimal.ZERO;
+            }
             BigDecimal resteAPayer = prestation.getMontantTotal().subtract(montantPaye);
             model.addAttribute("prestation", prestation);
             model.addAttribute("montantPaye", montantPaye);
             model.addAttribute("resteAPayer", resteAPayer);
-            model.addAttribute("paiements", paiementPrestationService.getByPrestation(prestation));
         });
         model.addAttribute("title", "Paiement Prestation");
         model.addAttribute("content", "Prestation/payer");
@@ -160,31 +178,19 @@ public class PrestationController {
         return "layout";
     }
 
+    // Le paiement se fait maintenant via facture société
+    // Cette méthode redirige vers la facture société correspondante
     @PostMapping("/payer/{id}")
-    public String payer(@PathVariable Long id, 
-                        @RequestParam BigDecimal montant,
-                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate datePaiement) {
-        prestationService.getById(id).ifPresent(prestation -> {
-            PaiementPrestation paiement = new PaiementPrestation(prestation, montant, datePaiement);
-            paiementPrestationService.create(paiement);
-        });
-        return "redirect:/prestation";
+    public String payer(@PathVariable Long id) {
+        return prestationService.getById(id)
+                .filter(p -> p.getFactureSociete() != null)
+                .map(p -> "redirect:/facture-societe/" + p.getFactureSociete().getIdFactureSociete() + "/payer")
+                .orElse("redirect:/prestation");
     }
 
     @GetMapping("/historique")
     public String historiquePaiements(Model model) {
-        List<PaiementPrestation> paiements = paiementPrestationService.getAll();
-        
-        BigDecimal totalPaiements = paiements.stream()
-                .map(PaiementPrestation::getMontant)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
-        model.addAttribute("paiements", paiements);
-        model.addAttribute("totalPaiements", totalPaiements);
-        model.addAttribute("title", "Historique des Paiements");
-        model.addAttribute("content", "Prestation/historique");
-        model.addAttribute("fragment", "content");
-        model.addAttribute("pageCss", "reservation-list.css");
-        return "layout";
+        // Redirection vers l'historique des paiements par facture société
+        return "redirect:/facture-societe/historique";
     }
 }

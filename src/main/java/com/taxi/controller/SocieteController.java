@@ -5,7 +5,7 @@ import com.taxi.models.Prestation;
 import com.taxi.dto.SocieteStatsDTO;
 import com.taxi.service.SocieteService;
 import com.taxi.service.PrestationService;
-import com.taxi.service.PaiementPrestationService;
+import com.taxi.service.PaiementFactureSocieteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +26,7 @@ public class SocieteController {
     private PrestationService prestationService;
 
     @Autowired
-    private PaiementPrestationService paiementPrestationService;
+    private PaiementFactureSocieteService paiementFactureSocieteService;
 
     @GetMapping
     public String list(Model model) {
@@ -40,7 +40,10 @@ public class SocieteController {
             List<Prestation> prestations = prestationService.getBySociete(s);
             for (Prestation p : prestations) {
                 montantTotal = montantTotal.add(p.getMontantTotal());
-                montantPaye = montantPaye.add(paiementPrestationService.getMontantPayeADate(p, LocalDate.now()));
+                // Utiliser le nouveau système de paiement par facture société
+                if (p.getFactureSociete() != null) {
+                    montantPaye = montantPaye.add(paiementFactureSocieteService.getMontantPayePourPrestationADate(p, LocalDate.now()));
+                }
             }
             
             societeStats.add(new SocieteStatsDTO(s, montantTotal, montantPaye));

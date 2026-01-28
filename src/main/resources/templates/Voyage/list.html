@@ -62,12 +62,15 @@
                             <th>Valeur Max</th>
                             <th>CA Billets</th>
                             <th>CA Prestations</th>
+                            <th>Prestations Payées</th>
+                            <th>Reste à Payer</th>
+                            <th>CA Total</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:if="${valeursMax.isEmpty()}">
-                            <td colspan="10">
+                            <td colspan="13">
                                 <div>
                                     <h3>Aucun voyage trouvé</h3>
                                     <p>Vous n'avez aucune voyage pour le moment.</p>
@@ -88,6 +91,9 @@
                             <td th:text="${valeurMax.valeurMax}">Valeur Max</td>
                             <td th:text="${valeurMax.chiffreAffaire}">CA Billets</td>
                             <td th:text="${valeurMax.caPrestation}">CA Prestations</td>
+                            <td th:text="${valeurMax.prestationsPayees}">Prestations Payées</td>
+                            <td th:text="${valeurMax.prestationsResteAPayer}">Reste à Payer</td>
+                            <td th:text="${valeurMax.caPrestation + valeurMax.chiffreAffaire}">CA Total</td>
                             <td>
                                 <a th:href="@{'/api/Voyage/edit/' + ${valeurMax.getVoyage().idVoyage}}">Éditer</a>
                                 <a th:if="${valeurMax.getVoyage().etatVoyage != null and valeurMax.getVoyage().etatVoyage.etat != 'annule'}" 
