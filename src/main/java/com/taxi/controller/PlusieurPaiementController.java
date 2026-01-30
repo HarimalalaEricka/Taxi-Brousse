@@ -15,6 +15,16 @@ public class PlusieurPaiementController {
     @Autowired
     private PlusieurPaiementService PlusieurPaiementService;
 
+    // Paiement partiel/multiple d'une facture de réservation
+    @PostMapping("/payer-facture/{factureId}")
+    public Object payerFactureReservation(@PathVariable Long factureId, @RequestBody PlusieurPaiement plusieurPaiement) {
+        try {
+            return PlusieurPaiementService.payerFactureReservation(factureId, plusieurPaiement);
+        } catch (Exception e) {
+            return java.util.Collections.singletonMap("error", e.getMessage());
+        }
+    }
+
     // Créer une entité
     @PostMapping
     public PlusieurPaiement create(@RequestBody PlusieurPaiement PlusieurPaiement) {

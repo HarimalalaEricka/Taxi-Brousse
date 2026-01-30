@@ -131,6 +131,100 @@
                         </div>
                     </div>
                 </div>
+
+                    <!-- Paiement partiel/multiple -->
+
+                    <div style="margin: 30px 0; padding: 20px; background: #f3f3f3; border-radius: 10px;">
+                        <h4 style="margin-bottom: 15px; color: #1a1a2e;">Effectuer un paiement partiel / multiple</h4>
+                        <div style="margin-bottom: 10px;">
+                            <span style="font-weight:bold;">Reste à payer :</span>
+                            <span th:text="${#numbers.formatDecimal(resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></span>
+                        </div>
+                        <form id="paiementForm" onsubmit="return envoyerPaiement(event)">
+                            <input type="hidden" id="factureId" name="factureId" th:value="${facture.idFacture}" />
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <div>
+                                    <label for="montant">Montant à payer :</label>
+                                    <input type="number" min="1" step="0.01" id="montant" name="montant" required style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;" oninput="afficherMontantAPayer()" />
+                                    <span id="affichageMontant" style="margin-left:10px; color:#1a1a2e; font-weight:bold;"></span>
+                                </div>
+                                <div>
+                                    <label for="typePaiement">Type de paiement :</label>
+                                    <select id="typePaiement" name="typePaiement" required style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                                        <option th:each="type : ${typesPaiement}" th:value="${type.idTypePaiement}" th:text="${type.type}">Espèces</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <button type="submit" style="background: #38ef7d; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;">Payer</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="paiementMessage" style="margin-top: 10px; color: #1a1a2e;"></div>
+                        <div style="margin-top: 20px;">
+                            <h5 style="margin-bottom: 10px; color: #1a1a2e;">Historique des paiements</h5>
+                            <table style="width:100%; background:#fff; border-radius:8px;">
+                                <thead>
+                                    <tr style="background:#e0e0e0;">
+                                        <th>Date</th>
+                                        <th>Montant</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(paiements)}">
+                                        <td colspan="3" style="text-align:center; color:#888;">Aucun paiement effectué.</td>
+                                    </tr>
+                                    <tr th:each="p : ${paiements}">
+                                        <td th:text="${#temporals.format(p.datePaiement, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="${#numbers.formatDecimal(p.montant, 0, 'COMMA', 0, 'POINT')} + ' Ar'"></td>
+                                        <td th:text="${p.typePaiement != null ? p.typePaiement.type : '-'}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <script>
+                    function afficherMontantAPayer() {
+                        const montant = document.getElementById('montant').value;
+                        const affichage = document.getElementById('affichageMontant');
+                        if(montant && montant > 0) {
+                            affichage.textContent = montant + ' Ar';
+                        } else {
+                            affichage.textContent = '';
+                        }
+                    }
+                    </script>
+
+                    <script>
+                    async function envoyerPaiement(event) {
+                        event.preventDefault();
+                        const factureId = document.getElementById('factureId').value;
+                        const montant = document.getElementById('montant').value;
+                        const typePaiementId = document.getElementById('typePaiement').value;
+                        const now = new Date();
+                        const plusieurPaiement = {
+                            montant: montant,
+                            datePaiement: now.toISOString(),
+                            typePaiement: { idTypePaiement: typePaiementId }
+                        };
+                        const response = await fetch(`/api/PlusieurPaiement/payer-facture/${factureId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(plusieurPaiement)
+                        });
+                        const result = await response.json();
+                        const msgDiv = document.getElementById('paiementMessage');
+                        if (result && result.error) {
+                            msgDiv.textContent = 'Erreur : ' + result.error;
+                            msgDiv.style.color = 'red';
+                        } else {
+                            msgDiv.textContent = 'Paiement enregistré avec succès !';
+                            msgDiv.style.color = '#38ef7d';
+                            setTimeout(() => window.location.reload(), 1200);
+                        }
+                        return false;
+                    }
+                    </script>
                 
                 <!-- Notes -->
                 <div style="margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee;">

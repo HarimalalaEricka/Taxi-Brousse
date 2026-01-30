@@ -18,7 +18,10 @@
                     <h3>Total des Types de Prestation</h3>
                     <p>Consultez et gérez tous vos Types de Prestation</p>
                 </div>
-                <div th:text="${typePrestations .size()}">0</div>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${typePrestations.size()}">0</strong> type(s) de prestation trouvé(s)
             </div>
 
             <table border="1">

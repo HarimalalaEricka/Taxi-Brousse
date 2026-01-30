@@ -1,0 +1,44 @@
+<section th:fragment="content">
+    <div class="header">
+        <h2>Paiement Billet</h2>
+    </div>
+
+    <div class="main">
+        <!-- Informations du billet -->
+        <div class="info-card">
+            <h3>Numéro du billet: <span th:text="${billet.numeroBillet}">Numéro</span></h3>
+            <p><strong>Au nom de :</strong> <span th:text="${billet.reservation.auNomDe}">Nom</span></p>
+            <p><strong>Trajet :</strong> <span th:text="${billet.reservation.voyage.trajet.villeDepart} + ' → ' + ${billet.reservation.voyage.trajet.villeArrivee}">Trajet</span></p>
+            <p><strong>Date de départ :</strong> <span th:text="${billet.reservation.voyage.dateDepart}">Date</span></p>
+            <p><strong>Heure de départ :</strong> <span th:text="${billet.reservation.voyage.heureDepart}">Heure</span></p>
+            <p><strong>Numéro de place :</strong> <span th:text="${billet.placeVoyage.place.numeroPlace}">Place</span></p>
+            <hr>
+            <p class="montant-total"><strong>Montant Total :</strong>
+                <span th:text="${#numbers.formatDecimal(montantTotal, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Total</span>
+            </p>
+            <p class="montant-paye"><strong>Total Payé :</strong>
+                <span th:text="${#numbers.formatDecimal(montantPaye, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Payé</span>
+            </p>
+            <p class="montant-reste"><strong>Reste à Payer :</strong>
+                <span th:text="${#numbers.formatDecimal(resteAPayer, 0, 'COMMA', 0, 'POINT')} + ' Ar'">Reste</span>
+            </p>
+        </div>
+
+        <!-- Formulaire de paiement -->
+        <div th:if="${resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) > 0}" class="payment-form">
+            <h4>Effectuer le paiement</h4>
+            <form th:action="@{'/billet/payer/' + ${billet.idBillet}}" method="post">
+                <button type="submit" class="btn btn-success">Payer maintenant</button>
+            </form>
+        </div>
+
+        <!-- Message si entièrement payé -->
+        <div th:if="${resteAPayer.compareTo(T(java.math.BigDecimal).ZERO) == 0}" class="success-message">
+            <strong>✓ Ce billet est entièrement payé</strong>
+        </div>
+
+        <div class="back-link">
+            <a href="/billet">← Retour à la liste</a>
+        </div>
+    </div>
+</section>

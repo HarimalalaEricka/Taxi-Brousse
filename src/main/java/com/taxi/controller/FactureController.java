@@ -1,12 +1,14 @@
 package com.taxi.controller;
 
 import com.taxi.models.*;
+import com.taxi.repository.*;
 import com.taxi.service.FactureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.taxi.models.Reservation;
 import com.taxi.service.ReservationService;
 import com.taxi.service.PrixBilletService;
+import com.taxi.service.TypePaiementService;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import java.math.BigDecimal;
@@ -25,6 +27,14 @@ public class FactureController {
     private ReservationService reservationService;
     @Autowired
     private PrixBilletService prixBilletService;
+
+    @Autowired
+    private TypePaiementService typePaiementService;
+
+    @Autowired
+    private PaiementRepository paiementRepository;
+    @Autowired
+    private PlusieurPaiementRepository plusieurPaiementRepository;
 
     // Créer une entité
     @PostMapping
@@ -56,46 +66,6 @@ public class FactureController {
         model.addAttribute("pageCss", "reservation-list.css");
         return "layout";
     }
-
-// @GetMapping("/{id}")
-// public String getById(@PathVariable Long id, Model model) {
-//     try {
-//         // Récupérer la facture
-//         Facture facture = FactureService.getById(id)
-//                 .orElseThrow(() -> new RuntimeException("Facture non trouvée"));
-        
-//         // Récupérer les réservations
-//         List<Reservation> reservations = reservationService.getByFactureId(id);
-        
-//         if (reservations.isEmpty()) {
-//             throw new RuntimeException("Aucune réservation trouvée");
-//         }
-        
-//         // Récupérer le trajet et les prix
-//         Long trajetId = reservations.get(0).getVoyage().getTrajet().getIdTrajet();
-//         List<PrixBillet> prixBillets = prixBilletService.getPrixByTrajetId(trajetId);
-        
-//         // Prendre le premier prix comme référence
-//         BigDecimal prixUnitaire = !prixBillets.isEmpty() ? prixBillets.get(0).getPrix() : BigDecimal.ZERO;
-        
-//         // Calculer le montant
-//         BigDecimal montantTotal = prixUnitaire.multiply(new BigDecimal(reservations.size()));
-//         facture.setMontant(montantTotal);
-        
-//         // Ajouter au modèle
-//         model.addAttribute("facture", facture);
-//         model.addAttribute("reservations", reservations);
-//         model.addAttribute("nombrePlaces", reservations.size());
-//         model.addAttribute("prixUnitaire", prixUnitaire);
-//         model.addAttribute("prixBillets", prixBillets);
-        
-//         return "Facture/factureDetails";
-        
-//     } catch (Exception e) {
-//         model.addAttribute("error", "Erreur: " + e.getMessage());
-//         return "error";
-//     }
-// }
 @GetMapping("/{id}")
 public String getById(@PathVariable Long id, Model model) {
     try {
@@ -115,6 +85,13 @@ public String getById(@PathVariable Long id, Model model) {
         // Calculer les détails de prix pour cette réservation
         Map<String, Object> detailsPrix = reservationService.calculDetailsPrixParReservation(reservation);
         
+        // Paiement principal
+        Paiement paiement = paiementRepository.findByFacture(facture).orElse(null);
+        java.util.List<PlusieurPaiement> paiements = paiement != null ? plusieurPaiementRepository.findByPaiement(paiement) : java.util.Collections.emptyList();
+        java.math.BigDecimal totalPaye = paiements.stream().map(PlusieurPaiement::getMontant).reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+        java.math.BigDecimal totalReservation = detailsPrix.get("totalReservation") instanceof java.math.BigDecimal ? (java.math.BigDecimal) detailsPrix.get("totalReservation") : new java.math.BigDecimal(detailsPrix.get("totalReservation").toString());
+        java.math.BigDecimal resteAPayer = totalReservation.subtract(totalPaye);
+
         // Ajouter les informations au modèle
         model.addAttribute("facture", facture);
         model.addAttribute("reservation", reservation);
@@ -123,11 +100,14 @@ public String getById(@PathVariable Long id, Model model) {
         model.addAttribute("voyage", reservation.getVoyage());
         model.addAttribute("trajet", reservation.getVoyage().getTrajet());
         model.addAttribute("utilisateur", facture.getUtilisateur());
+        model.addAttribute("typesPaiement", typePaiementService.getAll());
+        model.addAttribute("paiements", paiements);
+        model.addAttribute("resteAPayer", resteAPayer);
+        model.addAttribute("totalPaye", totalPaye);
         model.addAttribute("title", "Détails Facture");
         model.addAttribute("content", "Facture/factureDetails");
         model.addAttribute("fragment", "content");
         model.addAttribute("pageCss", "reservation-list.css");
-        
         return "layout";
         
     } catch (Exception e) {

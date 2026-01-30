@@ -20,6 +20,8 @@ public class ReservationService {
     private NbrPlaceReservationRepository nbrPlaceReservationRepository;
     @Autowired
     private VuePrixBilletRepository vuePrixBilletRepository;
+    @Autowired
+    private FactureService factureService;
 
     public Reservation create(Reservation Reservation) {
         return ReservationRepository.save(Reservation);
@@ -40,10 +42,6 @@ public class ReservationService {
     public void delete(Long id) {
         ReservationRepository.deleteById(id);
     }
-
-    // public List<Reservation> getByFactureId(Long factureId) {
-    //     return ReservationRepository.findByFactureIdFacture(factureId);
-    // }
     public Optional<Reservation> getByFactureId(Long factureId) {
         return ReservationRepository.findByFactureIdFacture(factureId)
                 .stream()
@@ -139,7 +137,6 @@ public Map<String, Object> calculDetailsPrixParReservation(Reservation reservati
         }
     }
     
-    // Remplir le map principal
     details.put("idReservation", idReservation);
     details.put("idTrajet", idTrajet);
     details.put("nomPassager", nomPassager);
@@ -148,52 +145,13 @@ public Map<String, Object> calculDetailsPrixParReservation(Reservation reservati
     details.put("nombreTotalPlaces", lignesDetails.stream()
         .mapToInt(l -> (Integer) l.get("nbrPlace"))
         .sum());
+
+    Facture facture = reservation.getFacture();
+    if (facture != null && facture.getMontant() == null) {
+        facture.setMontant(java.math.BigDecimal.valueOf(totalReservation));
+        factureService.update(facture);
+    }
     
     return details;
 }
-
-// @GetMapping("/{id}")
-// public String getById(@PathVariable Long id, Model model) {
-//     try {
-//         // Récupérer la facture
-//         Facture facture = factureService.getById(id)
-//                 .orElseThrow(() -> new RuntimeException("Facture non trouvée"));
-        
-//         // Récupérer les réservations associées
-//         List<Reservation> reservations = reservationService.getByFactureId(id);
-        
-//         if (reservations.isEmpty()) {
-//             throw new RuntimeException("Aucune réservation trouvée pour cette facture");
-//         }
-        
-//         // Calculer les détails pour chaque réservation
-//         List<Map<String, Object>> detailsParReservation = new ArrayList<>();
-//         double totalFacture = 0.0;
-//         int totalPlaces = 0;
-        
-//         for (Reservation reservation : reservations) {
-//             Map<String, Object> detailsReservation = 
-//                 voyageService.calculDetailsPrixParReservation(reservation);
-            
-//             if (!detailsReservation.isEmpty()) {
-//                 detailsParReservation.add(detailsReservation);
-//                 totalFacture += (Double) detailsReservation.get("totalReservation");
-//                 totalPlaces += (Integer) detailsReservation.get("nombreTotalPlaces");
-//             }
-//         }
-        
-//         // Ajouter les attributs au modèle
-//         model.addAttribute("facture", facture);
-//         model.addAttribute("reservations", reservations);
-//         model.addAttribute("detailsParReservation", detailsParReservation);
-//         model.addAttribute("totalPlaces", totalPlaces);
-//         model.addAttribute("totalFacture", totalFacture);
-        
-//         return "Facture/factureDetails";
-        
-//     } catch (Exception e) {
-//         model.addAttribute("error", "Erreur: " + e.getMessage());
-//         return "error";
-//     }
-// }
 }

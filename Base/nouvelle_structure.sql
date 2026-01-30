@@ -299,6 +299,20 @@ CREATE TABLE plusieur_paiement(
 );
 
 -- =========================
+-- TABLE : PAIEMENT_FACTURE
+-- =========================
+CREATE TABLE paiement_facture(
+   Id_paiement_facture SERIAL,
+   montant NUMERIC(15,2) NOT NULL,
+   date_paiement DATE NOT NULL,
+   mode_paiement VARCHAR(50),
+   reference VARCHAR(100) UNIQUE,
+   Id_facture INTEGER NOT NULL,
+   PRIMARY KEY(Id_paiement_facture),
+   FOREIGN KEY(Id_facture) REFERENCES facture(Id_facture)
+);
+
+-- =========================
 -- TABLE : PRESTATION
 -- (Modifiée pour référencer facture_societe)
 -- =========================

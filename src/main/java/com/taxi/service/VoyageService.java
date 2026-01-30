@@ -20,6 +20,74 @@ import java.math.BigDecimal;
 
 @Service
 public class VoyageService {
+    @Autowired
+    private FactureRepository factureRepository;
+    @Autowired
+    private PaiementRepository paiementRepository;
+    @Autowired
+    private PlusieurPaiementRepository plusieurPaiementRepository;
+
+    /**
+     * Calcule le montant total payé pour toutes les réservations d'un voyage (paiement par pourcentage)
+     */
+    public double getMontantPayeParVoyage(Voyage voyage) {
+        double totalPaye = 0.0;
+        if (voyage == null) return 0.0;
+        List<Reservation> reservations = reservationRepository.findByVoyage(voyage);
+        for (Reservation reservation : reservations) {
+            Facture facture = reservation.getFacture();
+            if (facture != null) {
+                Paiement paiement = paiementRepository.findByFacture(facture).orElse(null);
+                if (paiement != null) {
+                    List<PlusieurPaiement> paiements = plusieurPaiementRepository.findByPaiement(paiement);
+                    java.math.BigDecimal totalPayeFacture = paiements.stream()
+                        .map(PlusieurPaiement::getMontant)
+                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                    totalPaye += totalPayeFacture.doubleValue();
+                }
+            }
+        }
+        return totalPaye;
+    }
+
+    /**
+     * Calcule le reste à payer pour toutes les réservations d'un voyage (paiement par pourcentage)
+     */
+    public double getResteAPayerParVoyage(Voyage voyage) {
+        double reste = 0.0;
+        if (voyage == null) return 0.0;
+        List<Reservation> reservations = reservationRepository.findByVoyage(voyage);
+        for (Reservation reservation : reservations) {
+            Facture facture = reservation.getFacture();
+            if (facture != null) {
+                // On prend le montant dynamique (totalReservation)
+                double totalReservation = 0.0;
+                try {
+                    Map<String, Object> detailsPrix = new ReservationService().calculDetailsPrixParReservation(reservation);
+                    Object totalObj = detailsPrix.get("totalReservation");
+                    if (totalObj instanceof Number) {
+                        totalReservation = ((Number) totalObj).doubleValue();
+                    } else if (totalObj != null) {
+                        totalReservation = Double.parseDouble(totalObj.toString());
+                    }
+                } catch (Exception e) {
+                    // fallback: montant de la facture
+                    if (facture.getMontant() != null) totalReservation = facture.getMontant().doubleValue();
+                }
+                Paiement paiement = paiementRepository.findByFacture(facture).orElse(null);
+                double totalPayeFacture = 0.0;
+                if (paiement != null) {
+                    List<PlusieurPaiement> paiements = plusieurPaiementRepository.findByPaiement(paiement);
+                    java.math.BigDecimal totalPayeBD = paiements.stream()
+                        .map(PlusieurPaiement::getMontant)
+                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                    totalPayeFacture = totalPayeBD.doubleValue();
+                }
+                reste += Math.max(0, totalReservation - totalPayeFacture);
+            }
+        }
+        return reste;
+    }
 
     @Autowired
     private VoyageRepository VoyageRepository;
@@ -232,7 +300,9 @@ public class VoyageService {
             double caPrestation = calculCAPrestations(v);
             double prestationsPayees = calculPrestationsPayees(v);
             double prestationsResteAPayer = calculPrestationsResteAPayer(v);
-            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire, caPrestation, prestationsPayees, prestationsResteAPayer) );
+            double montantPayeReservations = getMontantPayeParVoyage(v);
+            double resteAPayerReservations = getResteAPayerParVoyage(v);
+            result.add( new VoyageValeur(v, valeurMax, chiffreAffaire, caPrestation, prestationsPayees, prestationsResteAPayer, montantPayeReservations, resteAPayerReservations) );
         }
         return result;
     }

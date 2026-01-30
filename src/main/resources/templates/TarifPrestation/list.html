@@ -18,7 +18,10 @@
                     <h3>Total des Tarifs</h3>
                     <p>Consultez et gérez tous vos Tarifs</p>
                 </div>
-                <div th:text="${tarifPrestations.size()}">0</div>
+            </div>
+
+            <div class="result-count">
+                <strong th:text="${tarifPrestations.size()}">0</strong> tarif(s) trouvé(s)
             </div>
 
             <table border="1">

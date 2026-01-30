@@ -1,17 +1,3 @@
-Insert into role(nom_role) values
-('admin'),
-('agent'),
-('client diver'),
-('client special');
-
--- INSERT INTO statut_utilisateur (enumlabel) VALUES
--- ('actif'),
--- ('inactif');
-
-insert into utilisateur(nom, prenom, telephone, email, adresse, statut, mot_de_passe, Id_Role) values
-('Admin', 'Super', '0000000000', 'admin@example.com', 'Adresse Admin', 'ACTIF', 'admin123', 1),
-('Agent', 'Service', '1111111111', 'agent@example.com', 'Adresse Agent', 'ACTIF', 'agent123', 2),
-('Client', 'Divers', '0000000000', null, null, 'ACTIF', null, 3);
 
 insert into chauffeur(nom, prenom, telephone, status) values
 ('Doe', 'John', '2223334444', 'ACTIF'),
@@ -21,21 +7,6 @@ insert into trajet(ville_depart, ville_arrivee, distance, duree_estimee) values
 ('Antananarivo', 'Toamasina', 600.50, 300),
 ('Antsirabe', 'Fianarantsoa', 200.00, 150);
 
-insert into etat_voyage(etat) values
-('en attente'),
-('en cours'),
-('termine'),
-('annule');
-
-insert into type_paiement(type) values
-('espece'),
-('carte bancaire'),
-('mobile money');
-
-insert into type_place(type) values
-('standard'),
-('premium'),
-('vip');
 
 INSERT INTO Categorie_personne(categorie, reduction_pourcentage, reduction_fixe, Id_type_place) VALUES
 ('adulte', 0, 0, 1),           
@@ -55,18 +26,6 @@ insert into prix_billet(prix, date_debut, date_fin, Id_trajet, Id_type_place) va
  
 
 
-(60000.00, '2026-01-01', null, 2, 1),
-(90000.00, '2026-01-01', null, 2, 2);
-
-insert into etat_vehicule(status) values
-('disponible'),
-('en route'),
-('hors service');
-
-insert into etat_paiement(etat) values
-('paye'),
-('non paye'),
-('partiellement paye');
 
 INSERT INTO vehicule(immatriculation, nombre_places, Id_etat_vehicule) VALUES
 ('1234-AB', 12, 1),

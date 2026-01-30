@@ -64,6 +64,8 @@
                             <th>CA Prestations</th>
                             <th>Prestations Payées</th>
                             <th>Reste à Payer</th>
+                            <th>Montant payé (Réservations)</th>
+                            <th>Reste à payer (Réservations)</th>
                             <th>CA Total</th>
                             <th>Actions</th>
                         </tr>
@@ -93,6 +95,8 @@
                             <td th:text="${valeurMax.caPrestation}">CA Prestations</td>
                             <td th:text="${valeurMax.prestationsPayees}">Prestations Payées</td>
                             <td th:text="${valeurMax.prestationsResteAPayer}">Reste à Payer</td>
+                            <td th:text="${valeurMax.montantPayeReservations}">Montant payé réservations</td>
+                            <td th:text="${valeurMax.resteAPayerReservations}">Reste à payer réservations</td>
                             <td th:text="${valeurMax.caPrestation + valeurMax.chiffreAffaire}">CA Total</td>
                             <td>
                                 <a th:href="@{'/api/Voyage/edit/' + ${valeurMax.getVoyage().idVoyage}}">Éditer</a>

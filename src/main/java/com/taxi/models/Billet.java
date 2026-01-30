@@ -2,6 +2,7 @@ package com.taxi.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "billet")
@@ -21,6 +22,8 @@ public class Billet {
     @ManyToOne
     @JoinColumn(name = "id_place_voyage", nullable = false)
     private PlaceVoyage placeVoyage;
+
+    private BigDecimal montant;
 
     public Long getIdBillet() {
         return idBillet;
@@ -52,6 +55,14 @@ public class Billet {
 
     public void setPlaceVoyage(PlaceVoyage placeVoyage) {
         this.placeVoyage = placeVoyage;
+    }
+
+    public BigDecimal getMontant() {
+        return montant;
+    }
+
+    public void setMontant(BigDecimal montant) {
+        this.montant = montant;
     }
 
     // Méthode de compatibilité pour accéder à la Place via PlaceVoyage
